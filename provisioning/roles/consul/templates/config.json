@@ -1,0 +1,10 @@
+{
+"bootstrap_expect": 2,
+"server": true,
+"datacenter": "dc1",
+"data_dir": "/opt/consul",
+"log_level": "INFO",
+"enable_syslog": false,
+"retry_join": ["192.168.35.121", "192.168.35.122"],
+"client_addr": "0.0.0.0"
+}

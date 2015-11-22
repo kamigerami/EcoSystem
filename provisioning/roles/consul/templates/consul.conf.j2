@@ -1,0 +1,16 @@
+#Consul Template (Upstart unit)
+[Unit]
+Description=consul agent
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/consul
+Environment=GOMAXPROCS=2
+Restart=on-failure
+ExecStart={{ consul_install_dir }}/consul agent {{ consul_extra }} -data-dir {{ consul_data_dir }} -node={{ hostname }} -bind={{ ip }} >> {{ consul_log_dir }}/consul.log 2>&1 &
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

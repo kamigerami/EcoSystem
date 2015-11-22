@@ -1,0 +1,75 @@
+---
+
+- name: systemd check
+  stat: path=/usr/lib/systemd/system/
+  register: systemd_check
+
+- name: Install os packages
+  yum: name={{item}} state=present
+  with_items:
+  - unzip
+
+- name: Add Consul User
+  user: name=consul state=present home={{ consul_install_dir}}
+
+- name: Add local bin to $PATH
+  lineinfile: dest=~/.bashrc regexp="^export PATH\=\/usr\/local\/bin" line="export PATH=/usr/local/bin:$PATH"
+
+- name: Create Directories
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: consul
+  with_items: directories
+
+- name: Download Consul
+  get_url: url={{ consul_installer_url_base }}/{{consul_installer_filename}} dest={{consul_install_dir}}/{{consul_installer_filename}}
+  sudo: yes
+
+- name: Unarchive Consul
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_installer_filename }} dest={{ consul_install_dir }} owner=root group=root mode=0755
+  sudo: yes
+  register: consul_installed
+  notify:
+  - restart systemd
+  - restart consul
+
+- name: Download Consul WebUI
+  get_url: url={{ consul_installer_url_base }}/{{consul_web_ui_installer_filename}} dest={{consul_install_dir}}/{{consul_web_ui_installer_filename}}
+  sudo: yes
+  when: swarm_master
+
+- name: Unarchive Consul WebUI
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_web_ui_installer_filename }} dest={{ consul_ui_install_dir }} owner=root group=root mode=0755
+  sudo: yes
+  register: consul_UI_installed
+  when: swarm_master
+  notify:
+  - restart systemd
+  - restart consul
+
+- name: link consul to /usr/local/bin
+  file: src={{consul_install_dir}}/consul dest=/usr/local/bin/consul state=link
+  when: consul_installed
+
+- name: Templates are present
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: templates
+  when: systemd_check.stat.exists == true
+  notify: 
+  - restart systemd
+  - restart consul
+
+- name: Service is started
+  service:
+    name=consul
+    state=started
+    pattern=/usr/local/bin/consul
+
+- name: Node is in cluster
+  shell: /usr/local/bin/consul join {{ consul_master_ip }}
+  when: (consul_master_ip is defined and swarm_master == false)
+

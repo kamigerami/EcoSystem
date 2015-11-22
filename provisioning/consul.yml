@@ -1,0 +1,5 @@
+---
+- hosts: consul
+  remote_user: vagrant
+  roles:
+  - { role: consul, sudo: yes }
