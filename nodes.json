@@ -5,9 +5,9 @@
       "ports": [],
       ":memory": 512,
       ":box": "centos/atomic-host",
-      ":image": "gliderlabs/registrator",
-      ":cmd": "gliderlabs/registrator consul://192.168.35.121:8500",
-      ":args": "--name=registrator --net=host --volume=/var/run/docker.sock:/tmp/docker.sock"
+      ":image": "gliderlabs/consul",
+      ":cmd": "-client 0.0.0.0 -join 192.168.35.121",
+      ":args": "-p 8500:8500"
     },
     "dockerhost-02.example.com": {
       ":ip": "192.168.35.102",
