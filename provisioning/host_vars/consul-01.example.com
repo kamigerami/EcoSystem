@@ -1,4 +1,9 @@
 hostname: consul-01.example.com
 ip: 192.168.35.121
-consul_extra: -server -bootstrap-expect 2 -ui-dir /opt/consul/ui/dist -config-dir /etc/consul.d/server/config.json
+consul_master_ip: 192.168.35.121
+consul_non_master_ip: 192.168.35.122
 swarm_master: true
+bootstrap_flag: "true"
+server_flag: "true"
+ui_flag: "true"
+agent_flag: "bootstrap"

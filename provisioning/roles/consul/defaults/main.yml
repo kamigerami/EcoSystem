@@ -14,7 +14,7 @@ consul_web_ui_installer_filename: "{{ consul_version }}_web_ui.zip"
 consul_ui_install_dir: /opt/consul/ui
 consul_data_dir: /opt/consul/data
 consul_config_dir: /opt/consul/config
-consul_config_file: /etc/consul.d/server/config.json
+consul_config_file: /opt/consul/config/config.json
 consul_log_dir: /opt/consul/logs
 
 directories:
@@ -28,5 +28,11 @@ directories:
 
 templates: [
   { src: "consul.conf.j2", dest: "/usr/lib/systemd/system/consul.service", mode: "0644" },
-  { src: "config.json", dest: "/etc/consul.d/server/config.json", mode: "0644" }
+  { src: "bootstrap.json", dest: "/opt/consul/config/config.json", mode: "0644" }
+] 
+
+files: [
+  { src: "mem_utilization.sh", dest: "/opt/consul/scripts/mem_utilization.sh", mode: "0644" },
+  { src: "hdd_utilization.sh", dest: "/opt/consul/scripts/hdd_utilization.sh", mode: "0644" },
+  { src: "cpu_utilization.sh", dest: "/opt/consul/scripts/cpu_utilization.sh", mode: "0644" }
 ]

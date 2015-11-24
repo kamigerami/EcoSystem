@@ -1,0 +1,58 @@
+{
+    "bootstrap" : {{ bootstrap_flag }},
+    "server" : {{ server_flag }},
+    "datacenter" : "dc1",
+    "data_dir" : "/opt/consul",
+    {% if "{{ ui_flag }}" == true %}
+    "ui_dir" : "/opt/consul/ui/dist",
+    {% endif %}
+    "log_level" : "INFO",
+    "enable_syslog" : true,
+    "retry_join" : ["{{ consul_master_ip }}","{{ consul_non_master_ip }}"],
+    "node_name": "{{ hostname }}",
+    {% if agent_flag == "agent" %}
+    "services": [
+        {
+            "name": "HTTP",
+            "address": "127.0.0.1",
+            "port": 80
+        }
+     ],
+    {% elif agent_flag == "server" %} 
+
+    {% else %}
+
+    "http_api_response_headers" : {
+        "Access-Control-Allow-Origin" : "*"
+    },
+    "addresses" : {
+        "http": "{{ consul_master_ip }}"
+    },
+    "ports" : {
+        "http" : 80
+    },
+    {% endif %}
+    "checks": [
+        {
+            "id" : "check_cpu_utilization",
+            "notes" : "Greater than 50% warn, greater than 75% fail.",
+            "name" : "CPU Utilization",
+            "script" : "/opt/consul/scripts/cpu_utilization.sh",
+            "interval" : "10s"
+        },
+        {
+          "id" : "check_mem_utilization",
+          "notes" : "Greater than 50% warn, greater than 75% fail.",
+          "name" : "MEM Utilization",
+          "script" : "/opt/consul/scripts/mem_utilization.sh",
+          "interval" : "10s"
+        },
+        {
+          "id" : "check_hdd_utilization",
+          "notes" : "Greater than 50% warn, greater than 75% fail.",
+          "name" : "HDD Utilization",
+          "script" : "/opt/consul/scripts/hdd_utilization.sh",
+          "interval" : "10s"
+        }
+    ]
+}

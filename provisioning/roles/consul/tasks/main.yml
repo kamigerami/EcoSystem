@@ -27,7 +27,7 @@
   sudo: yes
 
 - name: Unarchive Consul
-  unarchive: copy=no src={{consul_install_dir}}/{{ consul_installer_filename }} dest={{ consul_install_dir }} owner=root group=root mode=0755
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_installer_filename }} dest={{ consul_install_dir }} owner=consul group=root mode=0755
   sudo: yes
   register: consul_installed
   notify:
@@ -40,7 +40,7 @@
   when: swarm_master
 
 - name: Unarchive Consul WebUI
-  unarchive: copy=no src={{consul_install_dir}}/{{ consul_web_ui_installer_filename }} dest={{ consul_ui_install_dir }} owner=root group=root mode=0755
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_web_ui_installer_filename }} dest={{ consul_ui_install_dir }} owner=consul group=root mode=0755
   sudo: yes
   register: consul_UI_installed
   when: swarm_master
@@ -51,6 +51,13 @@
 - name: link consul to /usr/local/bin
   file: src={{consul_install_dir}}/consul dest=/usr/local/bin/consul state=link
   when: consul_installed
+
+- name: Scripts are present
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: files
 
 - name: Templates are present
   template:
