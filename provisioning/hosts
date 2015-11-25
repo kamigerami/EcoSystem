@@ -5,4 +5,4 @@ dockerhost-[01:03].example.com
 dockerswarm-01.example.com
 
 [consul]
-consul-[01:03].example.com
+consul-[01:04].example.com

@@ -42,7 +42,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           ansible.playbook = "provisioning/site.yml"
           ansible.groups = { "dockerhost" => ["dockerhost-01.example.com","dockerhost-02.example.com", "dockerhost-03.example.com"],
                              "dockerswarm" => ["dockerswarm-01.example.com"],
-                             "consul" => ["consul-01.example.com", "consul-02.example.com","consul-03.example.com"] }
+                             "consul" => ["consul-01.example.com", "consul-02.example.com","consul-03.example.com","consul-04.example.com"] }
      end
     if node_name !~ /^consul.*example.com$/
      # Runs Docker container provisioner for not consul-* hosts 

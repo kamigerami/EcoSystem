@@ -1,0 +1,14 @@
+---
+
+- name: Install os packages
+  yum: name={{item}} state=present
+  with_items:
+  - dnsmasq
+  - bind-utils
+
+- name: Templates are present
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: templates

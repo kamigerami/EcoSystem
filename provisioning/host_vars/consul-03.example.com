@@ -2,8 +2,8 @@ hostname: consul-03.example.com
 ip: 192.168.35.123
 consul_master_ip: 192.168.35.121
 consul_non_master_ip: 192.168.35.122
-swarm_master: false
+consul_server_ip: 192.168.35.123
 bootstrap_flag: "false"
-server_flag: "false"
+server_flag: "true"
 ui_flag: "false"
-agent_flag: "agent"
+host_type: "server"

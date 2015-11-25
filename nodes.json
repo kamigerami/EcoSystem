@@ -51,6 +51,13 @@
       "ports": [],
       ":memory": 512,
       ":box": "centos/7"
+    },
+    "consul-04.example.com": {
+      ":ip": "192.168.35.124",
+      "ports": [],
+      ":memory": 512,
+      ":box": "centos/7"
     }
+ 
   }
 }

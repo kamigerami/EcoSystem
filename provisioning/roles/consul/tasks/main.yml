@@ -8,6 +8,7 @@
   yum: name={{item}} state=present
   with_items:
   - unzip
+  - bc
 
 - name: Add Consul User
   user: name=consul state=present home={{ consul_install_dir}}
@@ -37,13 +38,13 @@
 - name: Download Consul WebUI
   get_url: url={{ consul_installer_url_base }}/{{consul_web_ui_installer_filename}} dest={{consul_install_dir}}/{{consul_web_ui_installer_filename}}
   sudo: yes
-  when: swarm_master
+  when: ui_flag
 
 - name: Unarchive Consul WebUI
   unarchive: copy=no src={{consul_install_dir}}/{{ consul_web_ui_installer_filename }} dest={{ consul_ui_install_dir }} owner=consul group=root mode=0755
   sudo: yes
   register: consul_UI_installed
-  when: swarm_master
+  when: ui_flag
   notify:
   - restart systemd
   - restart consul
@@ -57,6 +58,7 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: "{{ item.mode }}"
+    owner: consul
   with_items: files
 
 - name: Templates are present
@@ -76,7 +78,7 @@
     state=started
     pattern=/usr/local/bin/consul
 
-- name: Node is in cluster
-  shell: /usr/local/bin/consul join {{ consul_master_ip }}
-  when: (consul_master_ip is defined and swarm_master == false)
+#- name: Node is in cluster
+#  shell: /usr/local/bin/consul join {{ consul_master_ip }}
+#  when: (consul_master_ip is defined and swarm_master == false)
 

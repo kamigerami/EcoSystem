@@ -1,36 +1,36 @@
 {
-    "bootstrap" : {{ bootstrap_flag }},
+    {% if bootstrap_flag == "true" %}
+    "bootstrap_expect": 3,
+    {% elif host_type == "bootstrap" %}
+    "retry_join" : ["{{ consul_non_master_ip }}","{{ consul_server_ip }}"],
+    {% elif host_type == "server" and ip == consul_server_ip %}
+    "retry_join" : ["{{ consul_master_ip }}","{{ consul_non_master_ip }}"],
+    {% elif host_type == "server" and ip == consul_non_master_ip %}
+    "retry_join" : ["{{ consul_master_ip }}","{{ consul_server_ip }}"],
+    {% else %}
+    "retry_join" : ["{{ consul_master_ip }}","{{ consul_non_master_ip }}","{{ consul_server_ip }}"],
+    {% endif %}
     "server" : {{ server_flag }},
-    "datacenter" : "dc1",
-    "data_dir" : "/opt/consul",
-    {% if "{{ ui_flag }}" == true %}
+    {% if ui_flag == "true" %}
     "ui_dir" : "/opt/consul/ui/dist",
     {% endif %}
+    "datacenter" : "dc1",
+    "data_dir" : "/opt/consul/data",
     "log_level" : "INFO",
     "enable_syslog" : true,
-    "retry_join" : ["{{ consul_master_ip }}","{{ consul_non_master_ip }}"],
-    "node_name": "{{ hostname }}",
-    {% if agent_flag == "agent" %}
-    "services": [
-        {
-            "name": "HTTP",
-            "address": "127.0.0.1",
-            "port": 80
-        }
-     ],
-    {% elif agent_flag == "server" %} 
-
-    {% else %}
-
-    "http_api_response_headers" : {
-        "Access-Control-Allow-Origin" : "*"
-    },
-    "addresses" : {
-        "http": "{{ consul_master_ip }}"
-    },
-    "ports" : {
-        "http" : 80
-    },
+    "enable_debug": true,
+    "advertise_addr": "{{ ip }}",
+    "client_addr": "0.0.0.0",
+    {% if host_type == "bootstrap" %}
+    "http_api_response_headers" : { "Access-Control-Allow-Origin" : "*" },
+    "addresses" : { "http": "0.0.0.0" },
+    "ports" : { "http" : 80 },
+    {% elif host_type == "agent" %}
+    "services": [ {
+    "name": "HTTP",
+    "address": "127.0.0.1",
+    "port": 80 
+    }],
     {% endif %}
     "checks": [
         {

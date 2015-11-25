@@ -32,7 +32,7 @@ templates: [
 ] 
 
 files: [
-  { src: "mem_utilization.sh", dest: "/opt/consul/scripts/mem_utilization.sh", mode: "0644" },
-  { src: "hdd_utilization.sh", dest: "/opt/consul/scripts/hdd_utilization.sh", mode: "0644" },
-  { src: "cpu_utilization.sh", dest: "/opt/consul/scripts/cpu_utilization.sh", mode: "0644" }
+  { src: "mem_utilization.sh", dest: "/opt/consul/scripts/mem_utilization.sh", mode: "0755" },
+  { src: "hdd_utilization.sh", dest: "/opt/consul/scripts/hdd_utilization.sh", mode: "0755" },
+  { src: "cpu_utilization.sh", dest: "/opt/consul/scripts/cpu_utilization.sh", mode: "0755" }
 ]

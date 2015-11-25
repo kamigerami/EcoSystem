@@ -1,0 +1,3 @@
+templates: [
+  { src: "10-consul.conf", dest: "/etc/dnsmasq.d/10-consul.conf", mode: "0644" }
+] 
