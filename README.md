@@ -1,8 +1,8 @@
-<img src="http://demo.consul.io/ui/static/consul-logo.png" width="48">
-<img src="http://www.thekelleys.org.uk/dnsmasq/images/icon.png" width="48">
-<img src="https://github.com/docker/docker/blob/master/docs/static_files/docker-logo-compressed.png" width=96">
-<img src="https://www.mongodb.com/assets/MongoDB_Brand_Resources/MongoDB-Logo-5c3a7405a85675366beb3a5ec4c032348c390b3f142f5e6dddf1d78e2df5cb5c.png" width="96">
-<img src="https://www.nginx.com/wp-content/themes/nginx-theme/assets/img//logo.png" width="96">
+<a href="http://consul.io"><img src="http://demo.consul.io/ui/static/consul-logo.png" width="48"></a>
+<a href="https://www.thekelleys.org/dnsmasq"><img src="http://www.thekelleys.org.uk/dnsmasq/images/icon.png" width="48"></a>
+<a href="https://www.docker.com"><img src="https://github.com/docker/docker/blob/master/docs/static_files/docker-logo-compressed.png" width=96"></a>
+<a href="https://www.mongodb.com"><img src="https://www.mongodb.com/assets/MongoDB_Brand_Resources/MongoDB-Logo-5c3a7405a85675366beb3a5ec4c032348c390b3f142f5e6dddf1d78e2df5cb5c.png" width="96"></a>
+<a href="https://nginx.com"><img src="https://www.nginx.com/wp-content/themes/nginx-theme/assets/img//logo.png" width="96"></a>
 
 # EcoSystem
 A Consul, Dnsmasq, Docker Swarm, DB and webservices ecosystem simulating a real world production setup
@@ -11,7 +11,9 @@ A Consul, Dnsmasq, Docker Swarm, DB and webservices ecosystem simulating a real 
 
 
 # Structure
+Currently this is a work in progress and I will commit, rewrite the code, commit some more, change the architechture around, use some different products like Mesos for example. Nothing is set in stone just yet.
 
+I will provide more information as this ecosystem progresses further.
 
 ````
 $ tree
