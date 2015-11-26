@@ -6,7 +6,7 @@
       ":memory": 512,
       ":box": "centos/atomic-host",
       ":image": "gliderlabs/consul",
-      ":cmd": "-client 0.0.0.0 -join 192.168.35.121",
+      ":cmd": "agent -client 0.0.0.0 -join 192.168.35.121",
       ":args": "-p 8500:8500"
     },
     "dockerhost-02.example.com": {
