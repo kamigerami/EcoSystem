@@ -45,13 +45,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                              "consul" => ["consul-01.example.com", "consul-02.example.com","consul-03.example.com","consul-04.example.com"] }
      end
     if node_name !~ /^consul.*example.com$/
+        if node_values[':image'] != ""
      # Runs Docker container provisioner for not consul-* hosts 
-     config.vm.provision "docker" do |docker| 
-       docker.pull_images node_values[':image']
-       docker.run node_values[':image'],
-         cmd: node_values[':cmd'],
-         args: node_values[':args']
-     end
+          config.vm.provision "docker" do |docker| 
+          docker.pull_images node_values[':image']
+          docker.run node_values[':image'],
+           cmd: node_values[':cmd'],
+           args: node_values[':args']
+         end
+      end
     end
 
     end
