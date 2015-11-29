@@ -1,3 +1,4 @@
 ---
 - include: consul.yml 
 - include: dnsmasq.yml 
+- include: docker.yml 

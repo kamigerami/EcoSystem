@@ -1,0 +1,9 @@
+hostname: dockerhost-01.example.com
+ip: 192.168.35.101
+consul_master_ip: 192.168.35.121
+consul_non_master_ip: 192.168.35.122
+consul_server_ip: 192.168.35.123
+bootstrap_flag: "false"
+server_flag: "false"
+ui_flag: "false"
+host_type: "agent"

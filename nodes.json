@@ -4,16 +4,16 @@
       ":ip": "192.168.35.101",
       "ports": [],
       ":memory": 512,
-      ":box": "centos/atomic-host",
-      ":image": "gliderlabs/consul",
-      ":cmd": "agent -data-dir /var/tmp -client 0.0.0.0 -join 192.168.35.121",
-      ":args": "-p 8500:8500"
+      ":box": "centos/7",
+      ":image": "",
+      ":cmd": "",
+      ":args": ""
     },
     "dockerhost-02.example.com": {
       ":ip": "192.168.35.102",
       "ports": [],
       ":memory": 512,
-      ":box": "centos/atomic-host",
+      ":box": "centos/7",
       ":image": "",
       ":cmd": ""
     },
@@ -21,7 +21,7 @@
       ":ip": "192.168.35.103",
       "ports": [],
       ":memory": 512,
-      ":box": "centos/atomic-host",
+      ":box": "centos/7",
       ":image": "",
       ":cmd": ""
     },
@@ -29,7 +29,7 @@
       ":ip": "192.168.35.111",
       "ports": [],
       ":memory": 512,
-      ":box": "centos/atomic-host",
+      ":box": "centos/7",
       ":image": "",
       ":cmd": ""
     },
