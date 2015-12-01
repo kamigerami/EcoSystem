@@ -9,6 +9,8 @@ A Consul, Dnsmasq, Docker Swarm, DB and webservices ecosystem simulating a real 
 
 This will bring up the following hosts all running Centos/7 with Consul Agents, Docker-Engine.
 
+Please see ToDo (below). Will add a bunch of stuff
+
 
 ````
 Current machine states:
