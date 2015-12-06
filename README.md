@@ -9,7 +9,10 @@ A Consul, Dnsmasq, Docker Swarm, DB and webservices ecosystem simulating a real 
 
 This will bring up the following hosts all running Centos/7 with Consul Agents, Docker-Engine.
 
-Please see ToDo (below). Will add a bunch of stuff
+I created the vagrant file to be as dynamic as possible! You can basically just change a few variables and have the entire thing suit your own needs.
+
+
+Please see ToDo (below). Will add a bunch of stuff continously 
 
 
 ````
@@ -105,7 +108,7 @@ Add Loadbalancing, Scheduler, orchestration, WebApps, DB's etc ...
 vagrant up /consul/
 vagrant up /docker/
 ```
-Go to :  http://192.168.35.121 to access your Consul UI.
+Go to :  http://192.168.35.101 to access your Consul UI.
 
 
 
