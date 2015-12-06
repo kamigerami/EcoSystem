@@ -3,59 +3,87 @@
 # Build a Docker Swarm / Consul / Registrator EcoSystem
 # Created by Kami Gerami
 #
-# All node specific settings are located inside the nodes.json file
-#
-# read vm configurations from JSON files
-nodes_config = (JSON.parse(File.read("nodes.json")))['nodes']
 
-VAGRANTFILE_API_VERSION = "2"
+# Vars
+domainname = "example.com"
+cluster_name = "dockerswarm"
+engine_name = "dockerhost"
+discovery_name = "consul"
+hostname_vars = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+nodes = [
+  { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
+  { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
+  { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
+  { :hostname => "#{engine_name}-01.#{domainname}", :ip => "192.168.35.121" },
+  { :hostname => "#{engine_name}-02.#{domainname}", :ip => "192.168.35.122" },
+  { :hostname => "#{engine_name}-03.#{domainname}", :ip => "192.168.35.123" },
+  { :hostname => "#{cluster_name}-01.#{domainname}", :ip => "192.168.35.124" },
+
+]
+
+groups = { 
+    "#{engine_name}" => [], 
+    "#{cluster_name}" => [],
+    "#{discovery_name}" => [],
+    "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
+    }
 
 
-  nodes_config.each do |node|
-    node_name   = node[0] # name of node
-    node_values = node[1] # content of node
+Vagrant.configure(2) do |config|
 
+  nodes.each do |node|
+ 
+  # set the host specific vars
+  hostname = node[:hostname]
+  ip = node[:ip]
+  memory = node[:memory] || "512" # set 512 as default if nothing else is set
+  run = node[:run] || "always" # set provisioner to run always if nothing else is set
+  autostart = node[:autostart] || "true" # set to always autostart machines unless set
+  box = node[:box] || "centos/7" # set to run centos/7 as default unless set
+  provisioner = node[:provisioner] || "ansible" # sets ansible as default provisioner
+  docker_cmd = node[:docker_cmd]
+  docker_args = node[:docker_args]
 
-    config.vm.define node_name, autostart: node_values[':auto'] do |config|    
-      # configures all forwarding ports in JSON array
-      ports = node_values['ports']
-      ports.each do |port|
-        config.vm.network :forwarded_port,
-          host:  port[':host'],
-          guest: port[':guest'],
-          id:    port[':id']
-      end
+  # create ansible.extra_vars with IP and name of each host
+  hostname_vars[:ip] << node
+  hostname_vars[:hostname] << node
 
-      config.vm.box = node_values[':box']
-      config.vm.hostname = node_name
-      config.vm.network :private_network, ip: node_values[':ip']
+  # create the ansible groups
+  case hostname
+  when /"#{engine_name}"/
+    groups["#{engine_name}"].push(hostname)
+  when /"#{cluster_name}"/
+    groups["#{cluster_name}"].push(hostname)
+  when /"#{discovery_name}"/
+    groups["#{discovery_name}"].push(hostname)
+  end
+
+    config.vm.define hostname, autostart: autostart do |config|    
+
+      config.vm.box = box
+      config.vm.hostname = hostname
+      config.vm.network :private_network, ip: ip
 
       config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--memory", node_values[':memory']]
-        vb.customize ["modifyvm", :id, "--name", node_name]
+        vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
       end
     
-      # Runs ansible provisioner for Consul role
-      config.vm.provision "ansible" do |ansible|
-          ansible.playbook = "provisioning/site.yml"
-          ansible.groups = { "dockerhost" => ["dockerhost-01.example.com","dockerhost-02.example.com", "dockerhost-03.example.com"],
-                             "dockerswarm" => ["dockerswarm-01.example.com"],
-                             "consul" => ["consul-01.example.com", "consul-02.example.com","consul-03.example.com","consul-04.example.com"] }
-     end
-    if node_name !~ /^consul.*example.com$/
-        if node_values[':image'] != ""
-     # Runs Docker container provisioner for not consul-* hosts 
-          config.vm.provision "docker" do |docker| 
-          docker.pull_images node_values[':image']
-          docker.run node_values[':image'],
-           cmd: node_values[':cmd'],
-           args: node_values[':args']
-         end
+      # Runs a provisioner 
+      config.vm.provision provisioner, run: run do |pv|
+        case provisioner
+        when "ansible" 
+            pv.playbook = "provisioning/site.yml"
+            pv.groups = groups
+            pv.sudo = true
+            pv.extra_vars = hostname_vars
+        when "docker"
+            pv.pull_images image
+            pv.run image,
+            cmd: docker_cmd,
+            args: docker_args 
+        end
       end
-    end
-
     end
   end
 end
