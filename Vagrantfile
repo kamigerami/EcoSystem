@@ -48,14 +48,14 @@ Vagrant.configure(2) do |config|
   # create ansible.extra_vars with IP and name of each host
   hostname_vars[:ip] << node
   hostname_vars[:hostname] << node
-
+ 
   # create the ansible groups
   case hostname
-  when /"#{engine_name}"/
+  when /#{Regexp.escape(engine_name)}/
     groups["#{engine_name}"].push(hostname)
-  when /"#{cluster_name}"/
+  when /#{Regexp.escape(cluster_name)}/
     groups["#{cluster_name}"].push(hostname)
-  when /"#{discovery_name}"/
+  when /#{Regexp.escape(discovery_name)}/
     groups["#{discovery_name}"].push(hostname)
   end
 
