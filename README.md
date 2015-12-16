@@ -1,13 +1,9 @@
-<a href="http://consul.io"><img src="http://demo.consul.io/ui/static/consul-logo.png" width="48"></a>
-<a href="http://www.thekelleys.org.uk/dnsmasq/doc.html"><img src="http://www.thekelleys.org.uk/dnsmasq/images/icon.png" width="48"></a>
-<a href="https://www.docker.com"><img src="https://github.com/docker/docker/blob/master/docs/static_files/docker-logo-compressed.png" width=96"></a>
-<a href="https://www.mongodb.com"><img src="https://www.mongodb.com/assets/MongoDB_Brand_Resources/MongoDB-Logo-5c3a7405a85675366beb3a5ec4c032348c390b3f142f5e6dddf1d78e2df5cb5c.png" width="96"></a>
-<a href="https://nginx.com"><img src="https://www.nginx.com/wp-content/themes/nginx-theme/assets/img//logo.png" width="96"></a>
+<img src="architecture/architecture.jpg">
 
 # EcoSystem
-A Consul, Dnsmasq, Docker Swarm, DB and webservices ecosystem simulating a real world production setup
+A Consul, Dnsmasq, Docker Swarm, Docker compose, Artifactory ecosystem simulating a real world production setup
 
-This will bring up the following hosts all running Centos/7 with Consul Agents, Docker-Engine.
+This will bring up the following hosts all running Centos/7 with Consul master, Docker-Engine.
 
 I created the vagrant file to be as dynamic as possible! You can basically just change a few variables and have the entire thing suit your own needs.
 
@@ -18,15 +14,16 @@ Please see ToDo (below). Will add a bunch of stuff continously
 ````
 Current machine states:
 
-dockerhost-01.example.com  [ Consul Agent + Memory, CPU, HDD checks + Docker Engine ]
-dockerhost-02.example.com  [ Consul Agent + Memory, CPU, HDD checks + Docker Engine ]
-dockerhost-03.example.com  [ Consul Agent + Memory, CPU, HDD checks + Docker Engine ]
-dockerswarm-01.example.com [ Consul Agent + Memory, CPU, HDD checks + Docker Engine + DockerSwarm ]
+dockerhost-01.example.com  [ Docker Engine ]
+dockerhost-02.example.com  [ Docker Engine ]
+dockerhost-03.example.com  [ Docker Engine ]
+artifactory-01.example.com [ Docker Engine + Artifactory ]
+dockerswarm-01.example.com [ Docker Engine + DockerSwarm ]
+dockercompose-01.example.com [ Docker Engine + DockerCompose ]
+shipyard-01.example.com [ Docker Engine + Shipyard ]
 consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine ]
 consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine ]
 consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine ]
-consul-04.example.com  [ Consul Agent + Memory, CPU, HDD checks + Docker Engine ]
-
 ```
 
 
@@ -46,14 +43,6 @@ $ tree
     ├── consul.yml
     ├── dnsmasq.yml
     ├── docker.yml
-    ├── host_vars
-    │   ├── consul-01.example.com
-    │   ├── consul-02.example.com
-    │   ├── consul-03.example.com
-    │   ├── consul-04.example.com
-    │   ├── dockerhost-01.example.com
-    │   ├── dockerhost-02.example.com
-    │   └── dockerhost-03.example.com
     ├── hosts
     ├── roles
     │   ├── common
@@ -99,7 +88,7 @@ $ tree
 ````
 # ToDo
 
-Add Loadbalancing, Scheduler, orchestration, WebApps, DB's etc ...
+Add Swarm, Compose, Artifactory , Shipyard
 
 
 # How to 
@@ -109,6 +98,4 @@ vagrant up /consul/
 vagrant up /docker/
 ```
 Go to :  http://192.168.35.101 to access your Consul UI.
-
-
 

@@ -9,9 +9,6 @@ domainname = "example.com"
 cluster_name = "dockerswarm"
 engine_name = "dockerhost"
 discovery_name = "consul"
-hostname_ip = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
-hostname_hostname = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
-hostname_vars = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
 
 nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
@@ -29,6 +26,9 @@ groups = {
     "#{engine_name}" => [], 
     "#{cluster_name}" => [],
     "#{discovery_name}" => [],
+    "#{discovery_name}:master" => ["#{discovery_name}-01.#{domainname}"],
+    "#{discovery_name}:server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
+    "#{discovery_name}:agent" => ["#{discovery_name}-04.#{domainname}"],
     "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
     }
 
@@ -48,6 +48,35 @@ Vagrant.configure(2) do |config|
   docker_args = node[:args] # docker arguments
   image = node[:image] # docker image 
 
+  # create ansible.extra_vars 
+  ansible_vars = <<EOF 
+  {
+  ":common" => {
+    ":master_ip" => "192.168.35.101",
+    ":server_ip_1" => "192.168.35.102",
+    ":server_ip_2" => "192.168.35.103",
+  },
+  ":master" => {
+    ":bootstrap_flag" => "true",
+    ":server_flag" => "true",
+    ":ui_flag" => "true",
+    ":host_type" => "bootstrap",
+  },
+  ":server" => {
+    ":bootstrap_flag" => "false",
+    ":server_flag" => "true",
+    ":ui_flag" => "false",
+    ":host_type" => "server",
+  },
+ ":agent" => {
+   ":bootstrap_flag" => "false",
+   ":server_flag" => "false",
+   ":ui_flag" => "false",
+   ":host_type" => "agent",
+ }
+ } 
+EOF
+ 
   # create the ansible groups
   case hostname
   when /#{Regexp.escape(engine_name)}/
@@ -73,7 +102,7 @@ Vagrant.configure(2) do |config|
             pv.playbook = "provisioning/site.yml"
             pv.groups = groups
             pv.sudo = true
-            pv.extra_vars = hostname_vars
+            pv.extra_vars = ansible_vars
       end
 
       # Runs a provisioner 
