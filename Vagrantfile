@@ -9,16 +9,16 @@ domainname = "example.com"
 cluster_name = "dockerswarm"
 engine_name = "dockerhost"
 discovery_name = "consul"
-hostname_vars = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
 
 nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
   { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
   { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
+  { :hostname => "#{discovery_name}-04.#{domainname}", :ip => "192.168.35.104" },
   { :hostname => "#{engine_name}-01.#{domainname}", :ip => "192.168.35.121" },
   { :hostname => "#{engine_name}-02.#{domainname}", :ip => "192.168.35.122" },
   { :hostname => "#{engine_name}-03.#{domainname}", :ip => "192.168.35.123" },
-  { :hostname => "#{cluster_name}-01.#{domainname}", :ip => "192.168.35.124" },
+  { :hostname => "#{cluster_name}-01.#{domainname}", :ip => "192.168.35.124", :provisioner => "docker", :image => "swarm", :cmd => "create", :args => ""},
 
 ]
 
@@ -26,9 +26,11 @@ groups = {
     "#{engine_name}" => [], 
     "#{cluster_name}" => [],
     "#{discovery_name}" => [],
+    "#{discovery_name}:master" => ["#{discovery_name}-01.#{domainname}"],
+    "#{discovery_name}:server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
+    "#{discovery_name}:agent" => ["#{discovery_name}-04.#{domainname}"],
     "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
     }
-
 
 Vagrant.configure(2) do |config|
 
@@ -42,12 +44,38 @@ Vagrant.configure(2) do |config|
   autostart = node[:autostart] || "true" # set to always autostart machines unless set
   box = node[:box] || "centos/7" # set to run centos/7 as default unless set
   provisioner = node[:provisioner] || "ansible" # sets ansible as default provisioner
-  docker_cmd = node[:docker_cmd]
-  docker_args = node[:docker_args]
+  docker_cmd = node[:cmd] # docker command
+  docker_args = node[:args] # docker arguments
+  image = node[:image] # docker image 
 
-  # create ansible.extra_vars with IP and name of each host
-  hostname_vars[:ip] << node
-  hostname_vars[:hostname] << node
+  # create ansible.extra_vars 
+  ansible_vars = <<EOF 
+  {
+  ":common" => {
+    ":master_ip" => "192.168.35.101",
+    ":server_ip_1" => "192.168.35.102",
+    ":server_ip_2" => "192.168.35.103",
+  },
+  ":master" => {
+    ":bootstrap_flag" => "true",
+    ":server_flag" => "true",
+    ":ui_flag" => "true",
+    ":host_type" => "bootstrap",
+  },
+  ":server" => {
+    ":bootstrap_flag" => "false",
+    ":server_flag" => "true",
+    ":ui_flag" => "false",
+    ":host_type" => "server",
+  },
+ ":agent" => {
+   ":bootstrap_flag" => "false",
+   ":server_flag" => "false",
+   ":ui_flag" => "false",
+   ":host_type" => "agent",
+ }
+ } 
+EOF
  
   # create the ansible groups
   case hostname
@@ -68,21 +96,23 @@ Vagrant.configure(2) do |config|
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
       end
-    
-      # Runs a provisioner 
-      config.vm.provision provisioner, run: run do |pv|
-        case provisioner
-        when "ansible" 
+
+      # always run ansible provisioner
+      config.vm.provision "ansible", run: run do |pv|
             pv.playbook = "provisioning/site.yml"
             pv.groups = groups
             pv.sudo = true
-            pv.extra_vars = hostname_vars
-        when "docker"
-            pv.pull_images image
-            pv.run image,
-            cmd: docker_cmd,
-            args: docker_args 
-        end
+            pv.extra_vars = ansible_vars
+      end
+
+      # Runs a provisioner 
+      if provisioner == "docker"
+           config.vm.provision "docker", run: run do |pv|
+             pv.pull_images image
+             pv.run image,
+             cmd: docker_cmd,
+             args: docker_args 
+           end
       end
     end
   end
