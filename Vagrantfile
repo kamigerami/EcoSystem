@@ -9,16 +9,19 @@ domainname = "example.com"
 cluster_name = "dockerswarm"
 engine_name = "dockerhost"
 discovery_name = "consul"
+hostname_ip = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
+hostname_hostname = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
 hostname_vars = Hash.new { |hash, key| hash[key] = [] } # hash for extra vars
 
 nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
   { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
   { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
+  { :hostname => "#{discovery_name}-04.#{domainname}", :ip => "192.168.35.104" },
   { :hostname => "#{engine_name}-01.#{domainname}", :ip => "192.168.35.121" },
   { :hostname => "#{engine_name}-02.#{domainname}", :ip => "192.168.35.122" },
   { :hostname => "#{engine_name}-03.#{domainname}", :ip => "192.168.35.123" },
-  { :hostname => "#{cluster_name}-01.#{domainname}", :ip => "192.168.35.124" },
+  { :hostname => "#{cluster_name}-01.#{domainname}", :ip => "192.168.35.124", :provisioner => "docker", :image => "swarm", :cmd => "create", :args => ""},
 
 ]
 
@@ -28,7 +31,6 @@ groups = {
     "#{discovery_name}" => [],
     "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
     }
-
 
 Vagrant.configure(2) do |config|
 
@@ -42,13 +44,10 @@ Vagrant.configure(2) do |config|
   autostart = node[:autostart] || "true" # set to always autostart machines unless set
   box = node[:box] || "centos/7" # set to run centos/7 as default unless set
   provisioner = node[:provisioner] || "ansible" # sets ansible as default provisioner
-  docker_cmd = node[:docker_cmd]
-  docker_args = node[:docker_args]
+  docker_cmd = node[:cmd] # docker command
+  docker_args = node[:args] # docker arguments
+  image = node[:image] # docker image 
 
-  # create ansible.extra_vars with IP and name of each host
-  hostname_vars[:ip] << node
-  hostname_vars[:hostname] << node
- 
   # create the ansible groups
   case hostname
   when /#{Regexp.escape(engine_name)}/
@@ -68,21 +67,23 @@ Vagrant.configure(2) do |config|
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
       end
-    
-      # Runs a provisioner 
-      config.vm.provision provisioner, run: run do |pv|
-        case provisioner
-        when "ansible" 
+
+      # always run ansible provisioner
+      config.vm.provision "ansible", run: run do |pv|
             pv.playbook = "provisioning/site.yml"
             pv.groups = groups
             pv.sudo = true
             pv.extra_vars = hostname_vars
-        when "docker"
-            pv.pull_images image
-            pv.run image,
-            cmd: docker_cmd,
-            args: docker_args 
-        end
+      end
+
+      # Runs a provisioner 
+      if provisioner == "docker"
+           config.vm.provision "docker", run: run do |pv|
+             pv.pull_images image
+             pv.run image,
+             cmd: docker_cmd,
+             args: docker_args 
+           end
       end
     end
   end
