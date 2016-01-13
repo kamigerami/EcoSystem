@@ -1,37 +1,36 @@
 {
-    {% if bootstrap_flag == "true" %}
+     {% if common.master_ip == ansible_eth1.ipv4.address %}
     "bootstrap_expect": 3,
-    {% elif host_type == "bootstrap" %}
-    "retry_join" : ["{{ consul_non_master_ip }}","{{ consul_server_ip }}"],
-    {% elif host_type == "server" and ip == consul_server_ip %}
-    "retry_join" : ["{{ consul_master_ip }}","{{ consul_non_master_ip }}"],
-    {% elif host_type == "server" and ip == consul_non_master_ip %}
-    "retry_join" : ["{{ consul_master_ip }}","{{ consul_server_ip }}"],
-    {% else %}
-    "retry_join" : ["{{ consul_master_ip }}","{{ consul_non_master_ip }}","{{ consul_server_ip }}"],
-    {% endif %}
-    "server" : {{ server_flag }},
-    {% if ui_flag == "true" %}
+    "retry_join" : ["{{ common.server_ip_1 }}","{{common.server_ip_2}}"],
+    "server" : {{ master.server_flag }},
+      {% if master.ui_flag == "true" %}
     "ui_dir" : "/opt/consul/ui/dist",
+      {% endif %}
+    "http_api_response_headers" : { "Access-Control-Allow-Origin" : "*" },
+    "addresses" : { "http": "0.0.0.0" },
+    "ports" : { "http" : 80 },
+     {% elif common.server_ip_1 == ansible_eth1.ipv4.address %}
+    "retry_join" : ["{{ common.master_ip }}","{{ common.server_ip_2 }}"],
+    "server" : {{ server.server_flag }},
+     {% elif common.server_ip_2 == ansible_eth1.ipv4.address %}
+    "retry_join" : ["{{ common.master_ip }}","{{ common.server_ip_1 }}"],
+    "server" : {{ server.server_flag }},
+    {% else %}
+    "retry_join" : ["{{ common.master_ip }}","{{ common.server_ip_1 }}","{{ common.server_ip_2 }}"],
+    "server" : {{ agent.server_flag }},
+    "services": [ {
+    "name": "HTTP",
+    "address": "127.0.0.1",
+    "port": 80 
+      }],
     {% endif %}
     "datacenter" : "dc1",
     "data_dir" : "/opt/consul/data",
     "log_level" : "INFO",
     "enable_syslog" : true,
     "enable_debug": true,
-    "advertise_addr": "{{ ip }}",
+    "advertise_addr": "{{ ansible_eth1.ipv4.address }}",
     "client_addr": "0.0.0.0",
-    {% if host_type == "bootstrap" %}
-    "http_api_response_headers" : { "Access-Control-Allow-Origin" : "*" },
-    "addresses" : { "http": "0.0.0.0" },
-    "ports" : { "http" : 80 },
-    {% elif host_type == "agent" %}
-    "services": [ {
-    "name": "HTTP",
-    "address": "127.0.0.1",
-    "port": 80 
-    }],
-    {% endif %}
     "checks": [
         {
             "id" : "check_cpu_utilization",
