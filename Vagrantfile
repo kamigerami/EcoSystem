@@ -14,7 +14,6 @@ nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
   { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
   { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
-  { :hostname => "#{discovery_name}-04.#{domainname}", :ip => "192.168.35.104" },
   { :hostname => "#{engine_name}-01.#{domainname}", :ip => "192.168.35.121" },
   { :hostname => "#{engine_name}-02.#{domainname}", :ip => "192.168.35.122" },
   { :hostname => "#{engine_name}-03.#{domainname}", :ip => "192.168.35.123" },
@@ -28,7 +27,6 @@ groups = {
     "#{discovery_name}" => [],
     "#{discovery_name}:master" => ["#{discovery_name}-01.#{domainname}"],
     "#{discovery_name}:server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
-    "#{discovery_name}:agent" => ["#{discovery_name}-04.#{domainname}"],
     "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
     }
 
@@ -49,33 +47,31 @@ Vagrant.configure(2) do |config|
   image = node[:image] # docker image 
 
   # create ansible.extra_vars 
-  ansible_vars = <<EOF 
-  {
-  ":common" => {
-    ":master_ip" => "192.168.35.101",
-    ":server_ip_1" => "192.168.35.102",
-    ":server_ip_2" => "192.168.35.103",
-  },
-  ":master" => {
-    ":bootstrap_flag" => "true",
-    ":server_flag" => "true",
-    ":ui_flag" => "true",
-    ":host_type" => "bootstrap",
-  },
-  ":server" => {
-    ":bootstrap_flag" => "false",
-    ":server_flag" => "true",
-    ":ui_flag" => "false",
-    ":host_type" => "server",
-  },
- ":agent" => {
-   ":bootstrap_flag" => "false",
-   ":server_flag" => "false",
-   ":ui_flag" => "false",
-   ":host_type" => "agent",
- }
- } 
-EOF
+  ansible_vars =  {
+    :common => {
+      :master_ip => "192.168.35.101",
+      :server_ip_1 => "192.168.35.102",
+      :server_ip_2 => "192.168.35.103",
+    },
+     :master => {
+      :bootstrap_flag => "true",
+      :server_flag => "true",
+      :ui_flag => "true",
+      :host_type => "bootstrap",
+    },
+    :server => {
+      :bootstrap_flag => "false",
+      :server_flag => "true",
+      :ui_flag => "false",
+      :host_type => "server",
+    },
+    :agent => {
+      :bootstrap_flag => "false",
+      :server_flag => "false",
+      :ui_flag => "false",
+      :host_type => "agent",
+    }
+  }
  
   # create the ansible groups
   case hostname
@@ -103,8 +99,8 @@ EOF
             pv.groups = groups
             pv.sudo = true
             pv.extra_vars = ansible_vars
+            #pv.verbose = 'vvvv'
       end
-
       # Runs a provisioner 
       if provisioner == "docker"
            config.vm.provision "docker", run: run do |pv|
