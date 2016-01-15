@@ -1,0 +1,7 @@
+---
+- hosts: dockerswarm
+  remote_user: vagrant
+  roles:
+  - { role: consul }
+  - { role: docker }
+  - { role: dockerswarm, become: yes, become_method: sudo }

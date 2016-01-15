@@ -1,8 +1,16 @@
 ---
-
 - name: Install os packages
   yum: name={{item}} state=present
   with_items:
   - unzip
   - bc
   - net-tools
+  - vim
+  - python-devel
+  - python-setuptools
+
+- name: Download pip.
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp
+
+- name: Install pip.
+  command: "python /tmp/get-pip.py"

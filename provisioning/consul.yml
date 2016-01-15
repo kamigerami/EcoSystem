@@ -2,4 +2,4 @@
 - hosts: consul
   remote_user: vagrant
   roles:
-  - { role: consul, sudo: yes }
+    - { role: consul, become: yes, become_method: sudo }
