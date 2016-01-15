@@ -1,0 +1,8 @@
+- name: Swarm create
+  docker:
+    name: swarm_cluster
+    image: swarm
+#   pull: always
+    state: present
+#   command: create
+  #register: cluster_id

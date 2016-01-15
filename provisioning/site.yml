@@ -1,4 +1,10 @@
 ---
+- hosts: all
+  remote_user: vagrant
+  roles:
+    - { role: common, become: yes, become_method: sudo }
+
 - include: consul.yml 
 - include: dnsmasq.yml 
 - include: docker.yml 
+- include: dockerswarm.yml 

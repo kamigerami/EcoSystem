@@ -25,8 +25,8 @@ groups = {
     "#{engine_name}" => [], 
     "#{cluster_name}" => [],
     "#{discovery_name}" => [],
-    "#{discovery_name}:master" => ["#{discovery_name}-01.#{domainname}"],
-    "#{discovery_name}:server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
+    "#{discovery_name}_master" => ["#{discovery_name}-01.#{domainname}"],
+    "#{discovery_name}_server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
     "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
     }
 
@@ -99,17 +99,24 @@ Vagrant.configure(2) do |config|
             pv.groups = groups
             pv.sudo = true
             pv.extra_vars = ansible_vars
-            #pv.verbose = 'vvvv'
+            pv.verbose = 'vvvv'
       end
+
+      # #8 - Update to support ansible 2.x
+      # this provisioner is not being used any more
+      # in favor for running the docker modules
+      # that will manage containers inside the tasks instead
+      # as a playbook.
+      #
       # Runs a provisioner 
-      if provisioner == "docker"
-           config.vm.provision "docker", run: run do |pv|
-             pv.pull_images image
-             pv.run image,
-             cmd: docker_cmd,
-             args: docker_args 
-           end
-      end
+#      if provisioner == "docker"
+#           config.vm.provision "docker", run: run do |pv|
+#             pv.pull_images image
+#             pv.run image,
+#            cmd: docker_cmd,
+#             args: docker_args 
+#           end
+#     end
     end
   end
 end

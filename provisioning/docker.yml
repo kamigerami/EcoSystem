@@ -2,5 +2,5 @@
 - hosts: dockerhost
   remote_user: vagrant
   roles:
-  - { role: consul, sudo: yes }
-  - { role: docker, sudo: yes }
+  - { role: consul }
+  - { role: docker }
