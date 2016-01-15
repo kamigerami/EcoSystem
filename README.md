@@ -37,9 +37,11 @@ consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine
 ```
 # Requirements
 
+````
 Ansible 2.1.x
 Vagrant 1.8.x
 Virtualbox v.5.x
+````
 
 # Structure
 Currently this is a work in progress and I will commit, rewrite the code, commit some more, change the architechture around, use some different products like Mesos for example. Nothing is set in stone just yet.
