@@ -4,3 +4,4 @@
   roles:
   - { role: consul }
   - { role: docker }
+  - { role: dockerswarm }

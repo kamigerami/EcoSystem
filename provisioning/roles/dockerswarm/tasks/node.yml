@@ -1,0 +1,4 @@
+---
+- name: start swarm agents
+  command: docker run -d swarm join --addr="{{ansible_eth1.ipv4.address}}":2375 token://"{{ cluster_id }}"
+  when: "{{ cluster_id}}" is defined

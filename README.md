@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kamigerami/EcoSystem.svg?branch=master)](https://travis-ci.org/kamigerami/EcoSystem)
+
 <img src="architecture/architecture.jpg">
 
 # EcoSystem
