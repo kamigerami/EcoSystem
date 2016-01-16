@@ -1,8 +1,14 @@
-- name: Swarm create
+---
+- name: Swarm pull
   docker:
     name: swarm_cluster
     image: swarm
-#   pull: always
     state: present
-#   command: create
-  #register: cluster_id
+
+- name: Swarm create
+  command: docker run --rm swarm create
+  register: cluster_id
+  when: ansible_fqdn == swarm.cluster 
+
+- name: debug stuff
+  debug: msg="{{cluster_id.stdout_lines}}"

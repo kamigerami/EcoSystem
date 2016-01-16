@@ -1,0 +1,21 @@
+---
+sudo: required
+env:
+  - distribution: centos
+    version: 7
+
+language: python
+python: "2.7"
+
+before_install:
+  # Make sure everything's up to date.
+
+install:
+  # Install Ansible.
+  - pip install ansible
+
+script:
+  # We'll add some commands to test the role here.
+  - ansible-playbook provisioning/site.yml --syntax-check
+  # Run playbook
+  - ansible-playbook provisioning/site.yml --connection=local --sudo

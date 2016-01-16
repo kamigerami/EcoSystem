@@ -70,6 +70,9 @@ Vagrant.configure(2) do |config|
       :server_flag => "false",
       :ui_flag => "false",
       :host_type => "agent",
+    },
+    :swarm => {
+      :cluster => "#{cluster_name}-01.#{domainname}"
     }
   }
  
