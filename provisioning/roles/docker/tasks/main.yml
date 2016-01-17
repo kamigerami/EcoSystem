@@ -33,3 +33,7 @@
 
 - name: Install Docker-Py
   pip: name=docker-py
+
+- name: start Docker service
+  service: name=docker state=started
+

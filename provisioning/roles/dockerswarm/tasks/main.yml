@@ -8,7 +8,16 @@
 - name: Swarm create
   command: docker run --rm swarm create
   register: cluster_id
-  when: ansible_fqdn == swarm.cluster 
+  when: ansible_fqdn == swarm.master_name 
 
-- name: debug stuff
-  debug: msg="{{cluster_id.stdout_lines}}"
+- name: register to consul
+  command: curl -X PUT -d "{{ cluster_id.stdout_lines }}" http://"{{common.master_ip}}"/v1/kv/web/cluster_id
+  when: ansible_fqdn == swarm.master_name
+
+- name: start swarm agents
+  command: docker run -d swarm join --advertise="{{ansible_eth1.ipv4.address}}":2375 consul://"{{common.master_ip}}"
+  when: ansible_fqdn != swarm.master_name
+
+- name:  start swarm manager
+  command: docker run -d swarm manage -H tcp://"{{swarm.master_ip}}":80 consul://"{{common.master_ip}}"
+  when: ansible_fqdn == swarm.master_name
