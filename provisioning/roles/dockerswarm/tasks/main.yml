@@ -1,14 +1,8 @@
 ---
-- name: Swarm pull
-  docker:
-    name: swarm_cluster
-    image: swarm
-    state: present
+- name: Swarm manager task
+  include: manager.yml
+  when: ansible_fqdn in swarm.master_name 
 
-- name: Swarm create
-  command: docker run --rm swarm create
-  register: cluster_id
-  when: ansible_fqdn == swarm.cluster 
-
-- name: debug stuff
-  debug: msg="{{cluster_id.stdout_lines}}"
+- name: Swarm agent task
+  include: agent.yml
+  when: swarm.agent_name in ansible_fqdn

@@ -1,7 +1,0 @@
----
-- hosts: dockerhost
-  remote_user: vagrant
-  roles:
-  - { role: consul }
-  - { role: docker }
-  - { role: dockerswarm }

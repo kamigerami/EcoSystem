@@ -1,5 +1,0 @@
----
-- hosts: consul-01.example.com
-  remote_user: vagrant
-  roles:
-    - { role: dnsmasq, become: yes, become_method: sudo }

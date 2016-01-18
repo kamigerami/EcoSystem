@@ -1,35 +1,7 @@
-- name: add docker main repository
-  template:
-    src: docker-main.repo.j2
-    dest: /etc/yum.repos.d/docker-main.repo
-
-- name: create systemd override directory
-  file:
-    path: /etc/systemd/system/docker.service.d
-    state: directory
-  when: ansible_distribution_major_version == "7"
-
-- name: add systemd override
-  copy:
-    src: override.conf
-    dest: /etc/systemd/system/docker.service.d/override.conf
-  when: ansible_distribution_major_version == "7"
-
-- name: install docker
-  yum:
-    name: docker-engine
-    state: present
-  notify:
-    - restart cgconfig
-    - start docker
-
-- name: create sysconfig file
-  template:
-    src: sysconfig.j2
-    dest: /etc/sysconfig/docker
-
-- name: Install six
-  pip: name=six
-
-- name: Install Docker-Py
-  pip: name=docker-py
+---
+- name: Include Config, Install, Service files
+  include: roles/docker/tasks/{{ item }}
+  with_items:
+    - config.yml
+    - install.yml
+    - service.yml

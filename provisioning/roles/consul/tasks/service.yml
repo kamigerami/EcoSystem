@@ -1,0 +1,6 @@
+---
+- name: Service is started
+  service:
+    name=consul
+    state=started
+    pattern=/usr/local/bin/consul

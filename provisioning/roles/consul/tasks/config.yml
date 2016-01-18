@@ -1,0 +1,22 @@
+---
+- name: link consul to /usr/local/bin
+  file: src={{consul_install_dir}}/consul dest=/usr/local/bin/consul state=link
+  when: consul_installed
+
+- name: Scripts are present
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: consul
+  with_items: files
+
+- name: Templates are present
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: templates
+  notify: 
+  - restart systemd
+  - restart consul

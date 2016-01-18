@@ -6,28 +6,28 @@
 
 # Vars
 domainname = "example.com"
-cluster_name = "dockerswarm"
-engine_name = "dockerhost"
+manager_name = "dockerswarm"
+agent_name = "dockerhost"
 discovery_name = "consul"
 
 nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
   { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
   { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
-  { :hostname => "#{engine_name}-01.#{domainname}", :ip => "192.168.35.121" },
-  { :hostname => "#{engine_name}-02.#{domainname}", :ip => "192.168.35.122" },
-  { :hostname => "#{engine_name}-03.#{domainname}", :ip => "192.168.35.123" },
-  { :hostname => "#{cluster_name}-01.#{domainname}", :ip => "192.168.35.124", :provisioner => "docker", :image => "swarm", :cmd => "create", :args => ""},
+  { :hostname => "#{agent_name}-01.#{domainname}", :ip => "192.168.35.121" },
+  { :hostname => "#{agent_name}-02.#{domainname}", :ip => "192.168.35.122" },
+  { :hostname => "#{agent_name}-03.#{domainname}", :ip => "192.168.35.123" },
+  { :hostname => "#{manager_name}-01.#{domainname}", :ip => "192.168.35.124"},
 
 ]
 
 groups = { 
-    "#{engine_name}" => [], 
-    "#{cluster_name}" => [],
+    "#{agent_name}" => [], 
+    "#{manager_name}" => [],
     "#{discovery_name}" => [],
     "#{discovery_name}_master" => ["#{discovery_name}-01.#{domainname}"],
     "#{discovery_name}_server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
-    "all:children" => ["#{engine_name}","#{cluster_name}","#{discovery_name}"], 
+    "all:children" => ["#{agent_name}","#{manager_name}","#{discovery_name}"], 
     }
 
 Vagrant.configure(2) do |config|
@@ -72,16 +72,18 @@ Vagrant.configure(2) do |config|
       :host_type => "agent",
     },
     :swarm => {
-      :cluster => "#{cluster_name}-01.#{domainname}"
-    }
+      :master_name => "#{manager_name}-01.#{domainname}",
+      :master_ip => "192.168.35.124",
+      :agent_name => "#{agent_name}"
+    },
   }
  
   # create the ansible groups
   case hostname
-  when /#{Regexp.escape(engine_name)}/
-    groups["#{engine_name}"].push(hostname)
-  when /#{Regexp.escape(cluster_name)}/
-    groups["#{cluster_name}"].push(hostname)
+  when /#{Regexp.escape(agent_name)}/
+    groups["#{agent_name}"].push(hostname)
+  when /#{Regexp.escape(manager_name)}/
+    groups["#{manager_name}"].push(hostname)
   when /#{Regexp.escape(discovery_name)}/
     groups["#{discovery_name}"].push(hostname)
   end
@@ -91,6 +93,7 @@ Vagrant.configure(2) do |config|
       config.vm.box = box
       config.vm.hostname = hostname
       config.vm.network :private_network, ip: ip
+      config.vm.boot_timeout = 600
 
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
@@ -102,24 +105,9 @@ Vagrant.configure(2) do |config|
             pv.groups = groups
             pv.sudo = true
             pv.extra_vars = ansible_vars
-            pv.verbose = 'vvvv'
+    #       pv.verbose = 'vvvv'
       end
 
-      # #8 - Update to support ansible 2.x
-      # this provisioner is not being used any more
-      # in favor for running the docker modules
-      # that will manage containers inside the tasks instead
-      # as a playbook.
-      #
-      # Runs a provisioner 
-#      if provisioner == "docker"
-#           config.vm.provision "docker", run: run do |pv|
-#             pv.pull_images image
-#             pv.run image,
-#            cmd: docker_cmd,
-#             args: docker_args 
-#           end
-#     end
     end
   end
 end

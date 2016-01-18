@@ -18,6 +18,8 @@ Versions Installed in boxes right now (will always fetch latest):
 
 CentOS 7.1 
 Docker version 1.9.1, build a34a1d5
+swarm version 1.0.1, build 744e3a3
+gliderlabs/registrator v6
 pip (7.1.2)
 six (1.10.0)
 setuptools (0.9.8)
@@ -26,16 +28,16 @@ docker-py (1.6.0)
 
 Current machine states:
 
-dockerhost-01.example.com  [ Docker Engine ]
-dockerhost-02.example.com  [ Docker Engine ]
-dockerhost-03.example.com  [ Docker Engine ]
-artifactory-01.example.com [ Docker Engine + Artifactory ]
-dockerswarm-01.example.com [ Docker Engine + DockerSwarm ]
-dockercompose-01.example.com [ Docker Engine + DockerCompose ]
-shipyard-01.example.com [ Docker Engine + Shipyard ]
-consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine ]
-consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine ]
-consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine ]
+dockerhost-01.example.com  [ Docker Engine + Registrator + Swarm agent ]
+dockerhost-02.example.com  [ Docker Engine + Registrator + Swarm agent ]
+dockerhost-03.example.com  [ Docker Engine + Registrator + Swarm agent ]
+<del>artifactory-01.example.com [ Docker Engine + Artifactory ]</del>
+dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager ]
+<del>dockercompose-01.example.com [ Docker Engine + DockerCompose ]</del>
+<del>shipyard-01.example.com [ Docker Engine + Registrator + RethinkDB + Shipyard controller ]</del>
+consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine  + Registrator]
+consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator]
+consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator ]
 ```
 # Requirements
 
@@ -59,10 +61,6 @@ $ tree
 ├── architecture
 │   └── architecture.jpg
 └── provisioning
-    ├── consul.yml
-    ├── dnsmasq.yml
-    ├── docker.yml
-    ├── dockerswarm.yml
     ├── hosts
     ├── roles
     │   ├── common
@@ -78,7 +76,11 @@ $ tree
     │   │   ├── handlers
     │   │   │   └── main.yml
     │   │   ├── tasks
-    │   │   │   └── main.yml
+    │   │   │   ├── config.yml
+    │   │   │   ├── install.yml
+    │   │   │   ├── main.yml
+    │   │   │   ├── main.yml.bak
+    │   │   │   └── service.yml
     │   │   └── templates
     │   │       ├── bootstrap.json
     │   │       └── consul.conf.j2
@@ -97,18 +99,31 @@ $ tree
     │   │   ├── handlers
     │   │   │   └── main.yml
     │   │   ├── tasks
-    │   │   │   └── main.yml
+    │   │   │   ├── config.yml
+    │   │   │   ├── install.yml
+    │   │   │   ├── main.yml
+    │   │   │   └── service.yml
     │   │   ├── templates
     │   │   │   ├── docker-main.repo.j2
     │   │   │   └── sysconfig.j2
     │   │   └── vars
     │   │       └── main.yml
-    │   └── dockerswarm
+    │   ├── dockerswarm
+    │   │   └── tasks
+    │   │       ├── agent.yml
+    │   │       ├── main.yml
+    │   │       └── manager.yml
+    │   ├── registrator
+    │   │   └── tasks
+    │   │       └── main.yml
+    │   └── shipyard
     │       └── tasks
+    │           ├── controller.yml
+    │           ├── datastore.yml
     │           └── main.yml
     └── site.yml
 
-24 directories, 30 files
+28 directories, 39 files
 
 ````
 # ToDo

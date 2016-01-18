@@ -1,0 +1,11 @@
+- name: start Docker service
+  service: name=docker state=started enabled=yes
+
+- name: stop and remove old containers
+  docker:
+    image: "{{ item }}"
+    state: absent
+  with_items:
+    - swarm
+    - gliderlabs/registrator
+  ignore_errors: True
