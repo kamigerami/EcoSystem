@@ -31,10 +31,7 @@ Current machine states:
 dockerhost-01.example.com  [ Docker Engine + Registrator + Swarm agent ]
 dockerhost-02.example.com  [ Docker Engine + Registrator + Swarm agent ]
 dockerhost-03.example.com  [ Docker Engine + Registrator + Swarm agent ]
-~~artifactory-01.example.com [ Docker Engine + Artifactory ]~~
 dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager ]
-~~dockercompose-01.example.com [ Docker Engine + DockerCompose ]~~
-~~shipyard-01.example.com [ Docker Engine + Registrator + RethinkDB + Shipyard controller ]~~
 consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine  + Registrator]
 consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator]
 consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator ]
