@@ -1,23 +1,8 @@
 ---
-- name: Swarm pull
-  docker:
-    name: swarm_cluster
-    image: swarm
-    state: present
+- name: Swarm manager task
+  include: manager.yml
+  when: ansible_fqdn in swarm.master_name 
 
-- name: Swarm create
-  command: docker run --rm swarm create
-  register: cluster_id
-  when: ansible_fqdn == swarm.master_name 
-
-- name: register to consul
-  command: curl -X PUT -d "{{ cluster_id.stdout_lines }}" http://"{{common.master_ip}}"/v1/kv/web/cluster_id
-  when: ansible_fqdn == swarm.master_name
-
-- name: start swarm agents
-  command: docker run -d swarm join --advertise="{{ansible_eth1.ipv4.address}}":2375 consul://"{{common.master_ip}}"
-  when: ansible_fqdn != swarm.master_name
-
-- name:  start swarm manager
-  command: docker run -d swarm manage -H tcp://"{{swarm.master_ip}}":80 consul://"{{common.master_ip}}"
-  when: ansible_fqdn == swarm.master_name
+- name: Swarm agent task
+  include: agent.yml
+  when: swarm.agent_name in ansible_fqdn

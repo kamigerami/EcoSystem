@@ -5,6 +5,7 @@
   - unzip
   - bc
   - net-tools
+  - nmap-ncat
   - vim
   - python-devel
   - python-setuptools

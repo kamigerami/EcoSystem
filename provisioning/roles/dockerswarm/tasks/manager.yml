@@ -1,0 +1,9 @@
+---
+- name: Swarm manager
+  docker:
+    image: swarm
+    name: swarm-manager
+    state: restarted
+    pull: always
+    publish_all_ports: true
+    command: manage -H tcp://0.0.0.0:3375 consul://"{{common.master_ip}}"/swarm

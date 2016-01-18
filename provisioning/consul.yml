@@ -1,5 +1,0 @@
----
-- hosts: consul
-  remote_user: vagrant
-  roles:
-    - { role: consul, become: yes, become_method: sudo }

@@ -1,0 +1,41 @@
+---
+- name: Install os packages
+  yum: name={{item}} state=present
+  with_items:
+  - unzip
+  - bc
+
+- name: Add Consul User
+  user: name=consul state=present home={{ consul_install_dir}}
+
+- name: Add local bin to $PATH
+  lineinfile: dest=~/.bashrc regexp="^export PATH\=\/usr\/local\/bin" line="export PATH=/usr/local/bin:$PATH"
+
+- name: Create Directories
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: consul
+  with_items: directories
+
+- name: Download Consul
+  get_url: url={{ consul_installer_url_base }}/{{consul_installer_filename}} dest={{consul_install_dir}}/{{consul_installer_filename}}
+
+- name: Unarchive Consul
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_installer_filename }} dest={{ consul_install_dir }} owner=consul group=root mode=0755
+  register: consul_installed
+  notify:
+  - restart systemd
+  - restart consul
+
+- name: Download Consul WebUI
+  get_url: url={{ consul_installer_url_base }}/{{consul_web_ui_installer_filename}} dest={{consul_install_dir}}/{{consul_web_ui_installer_filename}}
+  when: ansible_eth1.ipv4.address == "192.168.35.101"
+
+- name: Unarchive Consul WebUI
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_web_ui_installer_filename }} dest={{ consul_ui_install_dir }} owner=consul group=root mode=0755
+  register: consul_UI_installed
+  when: ansible_eth1.ipv4.address == "192.168.35.101"
+  notify:
+  - restart systemd
+  - restart consul

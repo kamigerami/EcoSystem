@@ -1,0 +1,17 @@
+- name: install docker
+  yum:
+    name: docker-engine
+    state: present
+  notify:
+    - start docker
+
+- name: create sysconfig file
+  template:
+    src: sysconfig.j2
+    dest: /etc/sysconfig/docker
+
+- name: Install six
+  pip: name=six
+
+- name: Install Docker-Py
+  pip: name=docker-py

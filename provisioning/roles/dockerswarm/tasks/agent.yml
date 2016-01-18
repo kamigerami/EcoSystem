@@ -1,0 +1,7 @@
+---
+- name: start swarm agents
+  docker:
+    name: swarm-agent
+    image: swarm
+    state: restarted
+    command: join --advertise="{{ ansible_eth1.ipv4.address}}":2375 consul://"{{common.master_ip}}"/swarm

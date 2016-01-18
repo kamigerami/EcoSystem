@@ -1,0 +1,10 @@
+---
+- name: Start registrator
+  docker:
+    image: gliderlabs/registrator
+    pull: always
+    state: restarted
+    name: registrator
+    volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+    command: consul://"{{ common.master_ip }}"
