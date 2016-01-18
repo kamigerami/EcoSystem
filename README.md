@@ -125,7 +125,7 @@ $ tree
 ````
 # ToDo
 
-Add Swarm, Compose, Artifactory , Shipyard
+Add Compose, Shipyard, Artifactory 
 
 
 # How to 
