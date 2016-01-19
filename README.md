@@ -125,7 +125,11 @@ $ tree
 ````
 # ToDo
 
-Add Compose, Artifactory 
+Add Compose, Artifactory.
+
+Update to use Docker Network overlay
+
+Change to high availability Swarm manager with replicas and fail-over
 
 # How to 
 
