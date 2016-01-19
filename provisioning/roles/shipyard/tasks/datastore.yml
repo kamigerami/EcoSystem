@@ -1,0 +1,10 @@
+- name: Start Rethinkdb datastore
+  docker:
+    image: rethinkdb
+    name: shipyard-db
+    pull: always
+    publish_all_ports: true
+    restart_policy: on-failure
+    state: restarted
+    volumes:
+      - /rethinkdbdata

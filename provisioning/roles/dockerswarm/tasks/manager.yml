@@ -6,4 +6,6 @@
     state: restarted
     pull: always
     publish_all_ports: true
-    command: manage -H tcp://0.0.0.0:3375 consul://"{{common.master_ip}}"/swarm
+    ports:
+      - "3375:3375"
+    command: manage -H tcp://0.0.0.0:3375 --strategy "{{swarm.strategy}}" consul://"{{common.master_ip}}"/swarm

@@ -1,0 +1,9 @@
+---
+- name: Displaying URL links
+  debug: 
+    msg: "Provisioning completed: {{ item.name }}: http://{{ item.url }}"
+  with_items:
+   - { name: 'Consul UI', url: "{{ common.master_ip }}" }
+   - { name: 'ShipYard UI', url: "{{ swarm.master_ip }}:8080" }
+  tags: userinfo
+

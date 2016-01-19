@@ -1,0 +1,14 @@
+- name: Start Shipyard controller
+  docker:
+    image: shipyard/shipyard
+    name: shipyard-controller
+    pull: always
+    publish_all_ports: true
+    restart_policy: on-failure
+    state: reloaded
+    links:
+    - "shipyard-db:rethinkdb"
+    - "swarm-manager:swarm"
+    ports:
+    - "8080:8080"
+    command: server -d tcp://swarm:3375

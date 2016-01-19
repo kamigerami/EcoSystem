@@ -15,3 +15,6 @@
 
 - name: Install pip.
   command: "python /tmp/get-pip.py"
+
+- include: userinfo.yml
+  when: swarm.master_name in ansible_fqdn

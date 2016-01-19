@@ -74,7 +74,8 @@ Vagrant.configure(2) do |config|
     :swarm => {
       :master_name => "#{manager_name}-01.#{domainname}",
       :master_ip => "192.168.35.124",
-      :agent_name => "#{agent_name}"
+      :agent_name => "#{agent_name}",
+      :strategy => "spread",
     },
   }
  

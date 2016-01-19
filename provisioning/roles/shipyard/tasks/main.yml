@@ -1,0 +1,6 @@
+---
+- name: Include Shipyard Datastore and Controller
+  include: roles/shipyard/tasks/{{ item }}
+  with_items:
+    - datastore.yml
+    - controller.yml
