@@ -1,5 +1,5 @@
-- name: start Docker service
-  service: name=docker state=started enabled=yes
+- name: remove /etc/docker/key.json file
+  file: path=/etc/docker/key.json state=absent
 
 - name: stop and remove old containers
   docker:
@@ -8,4 +8,9 @@
   with_items:
     - swarm
     - gliderlabs/registrator
+    - rethinkdb
+    - shipyard/shipyard
   ignore_errors: True
+
+- name: restart Docker service
+  service: name=docker state=restarted enabled=yes

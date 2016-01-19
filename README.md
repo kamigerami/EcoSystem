@@ -31,7 +31,7 @@ Current machine states:
 dockerhost-01.example.com  [ Docker Engine + Registrator + Swarm agent ]
 dockerhost-02.example.com  [ Docker Engine + Registrator + Swarm agent ]
 dockerhost-03.example.com  [ Docker Engine + Registrator + Swarm agent ]
-dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager ]
+dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager + Shipyard UI ]
 consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine  + Registrator]
 consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator]
 consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator ]
@@ -62,7 +62,8 @@ $ tree
     ├── roles
     │   ├── common
     │   │   └── tasks
-    │   │       └── main.yml
+    │   │       ├── main.yml
+    │   │       └── userinfo.yml
     │   ├── consul
     │   │   ├── defaults
     │   │   │   └── main.yml
@@ -76,7 +77,6 @@ $ tree
     │   │   │   ├── config.yml
     │   │   │   ├── install.yml
     │   │   │   ├── main.yml
-    │   │   │   ├── main.yml.bak
     │   │   │   └── service.yml
     │   │   └── templates
     │   │       ├── bootstrap.json
@@ -125,14 +125,14 @@ $ tree
 ````
 # ToDo
 
-Add Swarm, Compose, Artifactory , Shipyard
+Add Compose, Artifactory 
 
 
 # How to 
 
 ```
-vagrant up /consul/
-vagrant up /docker/
+vagrant up 
 ```
 Go to :  http://192.168.35.101 to access your Consul UI.
+Go to :  http://192.168.35.124:8080 to access your ShipYard UI (username/pw = admin/shipyard)
 
