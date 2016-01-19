@@ -133,5 +133,6 @@ Add Compose, Artifactory
 vagrant up 
 ```
 Go to :  http://192.168.35.101 to access your Consul UI.
+
 Go to :  http://192.168.35.124:8080 to access your ShipYard UI (username/pw = admin/shipyard)
 
