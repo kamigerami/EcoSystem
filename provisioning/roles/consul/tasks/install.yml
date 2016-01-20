@@ -1,10 +1,4 @@
 ---
-- name: Install os packages
-  yum: name={{item}} state=present
-  with_items:
-  - unzip
-  - bc
-
 - name: Add Consul User
   user: name=consul state=present home={{ consul_install_dir}}
 
@@ -30,12 +24,12 @@
 
 - name: Download Consul WebUI
   get_url: url={{ consul_installer_url_base }}/{{consul_web_ui_installer_filename}} dest={{consul_install_dir}}/{{consul_web_ui_installer_filename}}
-  when: ansible_eth1.ipv4.address == "192.168.35.101"
+  when: ansible_eth1.ipv4.address == common.master_ip
 
 - name: Unarchive Consul WebUI
   unarchive: copy=no src={{consul_install_dir}}/{{ consul_web_ui_installer_filename }} dest={{ consul_ui_install_dir }} owner=consul group=root mode=0755
   register: consul_UI_installed
-  when: ansible_eth1.ipv4.address == "192.168.35.101"
+  when: ansible_eth1.ipv4.address == common.master_ip
   notify:
   - restart systemd
   - restart consul

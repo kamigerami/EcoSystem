@@ -1,13 +1,9 @@
 ---
-- hosts: consul
-  remote_user: vagrant
-  roles:
-    - { role: consul, become: yes, become_method: sudo }
-
 - hosts: all
   remote_user: vagrant
   roles:
     - { role: common, become: yes, become_method: sudo }
+    - { role: consul, become: yes, become_method: sudo }
     - { role: dnsmasq, become: yes, become_method: sudo }
     - { role: docker, become: yes, become_method: sudo }
     - { role: registrator, become: yes, become_method: sudo }
@@ -17,4 +13,4 @@
   remote_user: vagrant
   roles:
     - { role: shipyard, become: yes, become_method: sudo }
-    - { role: common, become: yes, become_method: sudo, tags: userinfo }
+    - { role: final, become: yes, become_method: sudo, tags: userinfo }
