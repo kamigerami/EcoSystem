@@ -24,7 +24,7 @@ pip (7.1.2)
 six (1.10.0)
 setuptools (0.9.8)
 docker-py (1.6.0)
-
+consul (0.6.3)
 
 Current machine states:
 
