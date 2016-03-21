@@ -14,10 +14,11 @@ nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
   { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
   { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
+  { :hostname => "#{manager_name}-01.#{domainname}", :ip => "192.168.35.124"},
   { :hostname => "#{agent_name}-01.#{domainname}", :ip => "192.168.35.121" },
   { :hostname => "#{agent_name}-02.#{domainname}", :ip => "192.168.35.122" },
   { :hostname => "#{agent_name}-03.#{domainname}", :ip => "192.168.35.123" },
-  { :hostname => "#{manager_name}-01.#{domainname}", :ip => "192.168.35.124"},
+
 
 ]
 

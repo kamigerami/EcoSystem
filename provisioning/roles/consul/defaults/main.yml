@@ -1,6 +1,6 @@
-consul_installer_url_base: https://releases.hashicorp.com/consul
-consul_installer_filename: "consul_{{ consul_version }}.zip"
-consul_version: 0.6.3
+consul_installer_url_base: "https://releases.hashicorp.com/consul/{{consul_version}}"
+consul_installer_filename: "consul_{{ consul_version }}_linux_amd64.zip"
+consul_version: 0.6.4
 consul_install_dir: /opt/consul
 consul_log_level: INFO
 
