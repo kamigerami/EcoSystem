@@ -6,6 +6,7 @@
     - { role: consul, become: yes, become_method: sudo }
     - { role: dnsmasq, become: yes, become_method: sudo }
     - { role: docker, become: yes, become_method: sudo }
+    - { role: dockercompose, become: yes, become_method: sudo }
     - { role: registrator, become: yes, become_method: sudo }
     - { role: dockerswarm, become: yes, become_method: sudo }
 
