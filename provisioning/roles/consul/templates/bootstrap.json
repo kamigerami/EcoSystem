@@ -4,7 +4,7 @@
     "retry_join" : ["{{ common.server_ip_1 }}","{{common.server_ip_2}}"],
     "server" : {{ master.server_flag }},
       {% if master.ui_flag == "true" %}
-    "ui_dir" : "/opt/consul/ui/dist",
+    "ui_dir" : "/opt/consul/ui",
       {% endif %}
     "http_api_response_headers" : { "Access-Control-Allow-Origin" : "*" },
     "addresses" : { "http": "0.0.0.0" },

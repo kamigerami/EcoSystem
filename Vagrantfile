@@ -7,7 +7,7 @@
 # Vars
 domainname = "example.com"
 manager_name = "dockerswarm"
-agent_name = "dockerhost"
+agent_name = "swarmnode"
 discovery_name = "consul"
 
 nodes = [
@@ -27,7 +27,8 @@ groups = {
     "#{manager_name}" => [],
     "#{discovery_name}" => [],
     "#{discovery_name}_master" => ["#{discovery_name}-01.#{domainname}"],
-    "#{discovery_name}_server" => ["#{discovery_name}-02.#{domainname}", "#{discovery_name}-03.#{domainname}"],
+    "#{discovery_name}_server" => ["#{discovery_name}-02.#{domainname}",
+    "#{discovery_name}-03.#{domainname}"], 
     "all:children" => ["#{agent_name}","#{manager_name}","#{discovery_name}"], 
     }
 
@@ -95,7 +96,8 @@ Vagrant.configure(2) do |config|
       config.vm.box = box
       config.vm.hostname = hostname
       config.vm.network :private_network, ip: ip
-      config.vm.boot_timeout = 600
+      config.vm.boot_timeout = 800
+      config.ssh.insert_key = false
 
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
@@ -107,7 +109,7 @@ Vagrant.configure(2) do |config|
             pv.groups = groups
             pv.sudo = true
             pv.extra_vars = ansible_vars
-    #       pv.verbose = 'vvvv'
+          # pv.verbose = 'vvvv'
       end
 
     end
