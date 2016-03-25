@@ -96,9 +96,8 @@ Vagrant.configure(2) do |config|
       config.vm.box = box
       config.vm.hostname = hostname
       config.vm.network :private_network, ip: ip
-      config.vm.boot_timeout = 800
-      config.ssh.insert_key = false
-
+      #config.vm.boot_timeout = 800
+      #config.ssh.insert_key = true
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
       end
