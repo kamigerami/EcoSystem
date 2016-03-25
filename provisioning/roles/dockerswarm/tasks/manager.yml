@@ -7,5 +7,5 @@
     pull: always
     publish_all_ports: true
     ports:
-      - "3375:3375"
-    command: manage -H tcp://0.0.0.0:3375 --strategy "{{swarm.strategy}}" consul://"{{common.master_ip}}"/swarm
+      - "3375:2375"
+    command: manage --strategy "{{swarm.strategy}}" consul://"{{common.master_ip}}"/
