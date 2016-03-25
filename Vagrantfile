@@ -97,6 +97,7 @@ Vagrant.configure(2) do |config|
       config.vm.hostname = hostname
       config.vm.network :private_network, ip: ip
       config.vm.boot_timeout = 800
+      config.ssh.insert_key = false
 
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
@@ -108,7 +109,7 @@ Vagrant.configure(2) do |config|
             pv.groups = groups
             pv.sudo = true
             pv.extra_vars = ansible_vars
-    #       pv.verbose = 'vvvv'
+          # pv.verbose = 'vvvv'
       end
 
     end

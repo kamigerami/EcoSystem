@@ -17,24 +17,26 @@ Please see ToDo (below). Will add a bunch of stuff continously
 Versions Installed in boxes right now (will always fetch latest):
 
 CentOS 7.1 
-Docker version 1.9.1, build a34a1d5
-swarm version 1.0.1, build 744e3a3
+Docker version 1.10.3, build 20f81dd
+docker-compose version 1.6.2, build 4d72027 
+swarm version 1.1.3, build 7e9c6bd
 gliderlabs/registrator v6
-pip (7.1.2)
+pip (8.1.1)
 six (1.10.0)
 setuptools (0.9.8)
-docker-py (1.6.0)
+docker-py (1.7.2)
 consul (0.6.4)
+
 
 Current machine states:
 
-dockerhost-01.example.com  [ Docker Engine + Registrator + Swarm agent ]
-dockerhost-02.example.com  [ Docker Engine + Registrator + Swarm agent ]
-dockerhost-03.example.com  [ Docker Engine + Registrator + Swarm agent ]
-dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager + Shipyard UI ]
-consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine  + Registrator]
-consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator]
-consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator ]
+consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine  + Registrator + Docker compose ]
+consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator + Docker compose ]
+consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator + Docker compose ]
+Dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager + Shipyard UI + Docker compose ]
+swarmnode-01.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
+swarmnode-02.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
+swarmnode-03.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
 ```
 # Requirements
 
@@ -45,7 +47,7 @@ Virtualbox v.5.x
 ````
 
 # Structure
-Currently this is a work in progress and I will commit, rewrite the code, commit some more, change the architechture around, use some different products like Mesos for example. Nothing is set in stone just yet.
+Currently this is a work in progress and I will commit, rewrite the code, commit some more, change the architechture around, use some different products like Mesos or etcd for service discovery and kubernetes instead of swarm but these will be done in different branches for example. Nothing is set in stone just yet.
 
 I will provide more information as this ecosystem progresses further.
 
@@ -104,6 +106,10 @@ $ tree
     │   │   │   └── sysconfig.j2
     │   │   └── vars
     │   │       └── main.yml
+    │   ├── dockercompose
+    │   │   └── tasks
+    │   │       ├── install.yml
+    │   │       └── main.yml
     │   ├── dockerswarm
     │   │   └── tasks
     │   │       ├── agent.yml
@@ -122,11 +128,11 @@ $ tree
     │           └── main.yml
     └── site.yml
 
-30 directories, 39 files
+32 directories, 41 files
 ````
 # ToDo
 
-Add Compose, Artifactory.
+Add registry or Artifactory as a Docker registry.
 
 Update to use Docker Network overlay
 
