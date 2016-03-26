@@ -1,5 +1,5 @@
 ---
-- name: Swarm manager
+- name: Swarm manager replica
   docker:
     image: swarm
     name: swarm-manager
@@ -9,4 +9,4 @@
     restart_policy: unless-stopped
     ports:
       - "3375:2375"
-    command: manage --strategy "{{swarm.strategy}}" consul://"{{common.master_ip}}"/
+    command: manage --strategy "{{swarm.strategy}}" --advertise="{{ ansible_eth1.ipv4.address}}":3375 --replication consul://"{{common.master_ip}}"/

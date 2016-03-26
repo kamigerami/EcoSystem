@@ -11,4 +11,4 @@
     - "swarm-manager:swarm"
     ports:
     - "8080:8080"
-    command: server -d tcp://swarm:3375
+    command: server -d tcp://"{{ ansible_eth1.ipv4.address}}":3375

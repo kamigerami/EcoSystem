@@ -15,6 +15,7 @@ nodes = [
   { :hostname => "#{discovery_name}-02.#{domainname}", :ip => "192.168.35.102" },
   { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.103" },
   { :hostname => "#{manager_name}-01.#{domainname}", :ip => "192.168.35.124"},
+  { :hostname => "#{manager_name}-02.#{domainname}", :ip => "192.168.35.125"},
   { :hostname => "#{agent_name}-01.#{domainname}", :ip => "192.168.35.121" },
   { :hostname => "#{agent_name}-02.#{domainname}", :ip => "192.168.35.122" },
   { :hostname => "#{agent_name}-03.#{domainname}", :ip => "192.168.35.123" },
@@ -75,6 +76,7 @@ Vagrant.configure(2) do |config|
     },
     :swarm => {
       :master_name => "#{manager_name}-01.#{domainname}",
+      :replica_name => "#{manager_name}-02.#{domainname}",
       :master_ip => "192.168.35.124",
       :agent_name => "#{agent_name}",
       :strategy => "spread",
