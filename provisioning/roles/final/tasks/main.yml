@@ -4,5 +4,5 @@
     msg: "Provisioning completed: {{ item.name }}: http://{{ item.url }}"
   with_items:
    - { name: 'Consul UI', url: "{{ common.master_ip }}" }
-   - { name: 'ShipYard UI', url: "{{ swarm.master_ip }}:8080" }
+   - { name: 'ShipYard UI', url: "{{ ansible_eth1.ipv4.address }}:8080" }
   tags: userinfo

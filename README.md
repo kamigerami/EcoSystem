@@ -34,6 +34,7 @@ consul-01.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine
 consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator + Docker compose ]
 consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator + Docker compose ]
 Dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager + Shipyard UI + Docker compose ]
+Dockerswarm-02.example.com [ Docker Engine + Registrator + Swarm manager replication + Shipyard UI + Docker compose ]
 swarmnode-01.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
 swarmnode-02.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
 swarmnode-03.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
@@ -114,7 +115,8 @@ $ tree
     │   │   └── tasks
     │   │       ├── agent.yml
     │   │       ├── main.yml
-    │   │       └── manager.yml
+    │   │       ├── manager.yml
+    │   │       └── replica.yml
     │   ├── final
     │   │   └── tasks
     │   │       └── main.yml
@@ -128,15 +130,20 @@ $ tree
     │           └── main.yml
     └── site.yml
 
-32 directories, 41 files
+32 directories, 42 files
+
 ````
 # ToDo
 
-Add registry or Artifactory as a Docker registry.
+Update to use docker overlay network #19
 
-Update to use Docker Network overlay
+Add TLS for communication #24
 
-Change to high availability Swarm manager with replicas and fail-over
+Add a second swarm manager as a replica enhancement #27
+
+Add registry or artifactory as a Docker registry #28
+
+Add support for container metrics / Data / monitoring / alerts #29
 
 # How to 
 
