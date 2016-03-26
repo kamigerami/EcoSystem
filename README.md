@@ -139,8 +139,6 @@ Update to use docker overlay network #19
 
 Add TLS for communication #24
 
-Add a second swarm manager as a replica enhancement #27
-
 Add registry or artifactory as a Docker registry #28
 
 Add support for container metrics / Data / monitoring / alerts #29
