@@ -10,6 +10,12 @@
     - { role: registrator, become: yes, become_method: sudo }
     - { role: dockerswarm, become: yes, become_method: sudo }
 
+- hosts: lb
+  remote_user: vagrant
+  roles:
+    - { role: consultemplate, become: yes, become_method: sudo, tags: consultemplate }
+    - { role: nginx, become: yes, become_method: sudo, tags: nginx-lb }
+
 - hosts: dockerswarm
   remote_user: vagrant
   roles:

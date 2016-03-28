@@ -1,0 +1,12 @@
+consul_installer_url_base: "https://releases.hashicorp.com/consul-template/{{consul_template_version}}"
+consul_installer_filename: "consul-template_{{ consul_template_version }}_linux_amd64.zip"
+consul_template_version: 0.14.0
+
+consul_install_dir: '/opt/consul'
+
+directories:
+  - /opt/consul
+
+templates: [
+  { src: "consul_template.conf", dest: "/opt/consul/consul_template.conf", mode: "0644" },
+] 

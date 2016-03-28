@@ -1,0 +1,15 @@
+---
+- name: Add local bin to $PATH
+  lineinfile: dest=~/.bashrc regexp="^export PATH\=\/usr\/local\/bin" line="export PATH=/usr/local/bin:$PATH"
+
+- name: Create Directories
+  file:
+    dest: "{{ item }}"
+    state: directory
+  with_items: directories
+
+- name: Download Consul template
+  get_url: url={{ consul_installer_url_base }}/{{consul_installer_filename}} dest={{consul_install_dir}}/{{consul_installer_filename}}
+
+- name: Unarchive Consul template
+  unarchive: copy=no src={{consul_install_dir}}/{{ consul_installer_filename }} dest={{ consul_install_dir }} owner=consul group=root mode=0755

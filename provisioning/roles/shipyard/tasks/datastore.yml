@@ -4,7 +4,9 @@
     name: shipyard-db
     pull: always
     publish_all_ports: true
-    restart_policy: on-failure
+    restart_policy: unless-stopped
     state: restarted
     volumes:
       - /rethinkdbdata
+  register: installed_shipyard
+  when: (ansible_eth1.ipv4.address == swarm.master_ip or ansible_eth1.ipv4.address == swarm.master_ip_2)

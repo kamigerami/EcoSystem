@@ -2,16 +2,15 @@
 
 <img src="architecture/architecture.jpg">
 
-# EcoSystem
-A Consul, Dnsmasq, Docker Swarm, Docker compose, Artifactory ecosystem simulating a real world production setup
+# EcoSystem Nginx Load balancer branch
 
-This will bring up the following hosts all running Centos/7 with Consul master, Docker-Engine.
+this will bring up a nginx LB host in addition to all of the consul and swarm nodes (master branch).
+Will add a redis and a couple of frontends using python flask.
 
-I created the vagrant file to be as dynamic as possible! You can basically just change a few variables and have the entire thing suit your own needs.
+When you go to the URL of the LB the proxy_pass should put you on one of the frontends showing the python flask app saying hello-world.
 
 
-Please see ToDo (below). Will add a bunch of stuff continously 
-
+Will continue configuring this (it's not complete) 
 
 ````
 Versions Installed in boxes right now (will always fetch latest):
@@ -35,6 +34,7 @@ consul-02.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine
 consul-03.example.com  [ Consul server + Memory, CPU, HDD checks + Docker Engine + Registrator + Docker compose ]
 Dockerswarm-01.example.com [ Docker Engine + Registrator + Swarm manager + Shipyard UI + Docker compose ]
 Dockerswarm-02.example.com [ Docker Engine + Registrator + Swarm manager replication + Shipyard UI + Docker compose ]
+lb-01.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose + nginx LB ]
 swarmnode-01.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
 swarmnode-02.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
 swarmnode-03.example.com  [ Docker Engine + Registrator + Swarm agent + Docker Compose ]
@@ -65,7 +65,9 @@ $ tree
     ├── roles
     │   ├── common
     │   │   └── tasks
-    │   │       └── main.yml
+    │   │       ├── install.yml
+    │   │       ├── main.yml
+    │   │       └── pre_check.yml
     │   ├── consul
     │   │   ├── defaults
     │   │   │   └── main.yml
@@ -83,6 +85,15 @@ $ tree
     │   │   └── templates
     │   │       ├── bootstrap.json
     │   │       └── consul.conf.j2
+    │   ├── consultemplate
+    │   │   ├── defaults
+    │   │   │   └── main.yml
+    │   │   ├── tasks
+    │   │   │   ├── config.yml
+    │   │   │   ├── install.yml
+    │   │   │   └── main.yml
+    │   │   └── templates
+    │   │       └── consul_template.conf
     │   ├── dnsmasq
     │   │   ├── defaults
     │   │   │   └── main.yml
@@ -120,6 +131,13 @@ $ tree
     │   ├── final
     │   │   └── tasks
     │   │       └── main.yml
+    │   ├── nginx
+    │   │   ├── files
+    │   │   │   └── consul_template.ctmpl
+    │   │   └── tasks
+    │   │       ├── config.yml
+    │   │       ├── lb.yml
+    │   │       └── main.yml
     │   ├── registrator
     │   │   └── tasks
     │   │       └── main.yml
@@ -128,22 +146,20 @@ $ tree
     │           ├── controller.yml
     │           ├── datastore.yml
     │           └── main.yml
+    ├── scripts
+    │   ├── Dockerfile
+    │   ├── README.md
+    │   ├── app.py
+    │   ├── docker-compose.yml
+    │   └── requirements.txt
     └── site.yml
 
-32 directories, 42 files
-
+40 directories, 58 files
 ````
 # ToDo
 
-Update to use docker overlay network #19
+Add redis, front--ends and a working LB with dynamic updated configuration using consul-template or nginx-proxy or confd or something similar.
 
-Add TLS for communication #24
-
-Add a second swarm manager as a replica enhancement #27
-
-Add registry or artifactory as a Docker registry #28
-
-Add support for container metrics / Data / monitoring / alerts #29
 
 # How to 
 

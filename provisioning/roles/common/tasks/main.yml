@@ -1,17 +1,6 @@
 ---
-- name: Install os packages
-  yum: name={{item}} state=present
+- name: Include pre task and Install
+  include: roles/common/tasks/{{ item }}
   with_items:
-  - unzip
-  - bc
-  - net-tools
-  - nmap-ncat
-  - vim
-  - python-devel
-  - python-setuptools
-
-- name: Download pip.
-  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp
-
-- name: Install pip.
-  command: "python /tmp/get-pip.py"
+    - pre_check.yml
+    - install.yml

@@ -4,7 +4,7 @@
     name: shipyard-controller
     pull: always
     publish_all_ports: true
-    restart_policy: on-failure
+    restart_policy: unless-stopped
     state: reloaded
     links:
     - "shipyard-db:rethinkdb"

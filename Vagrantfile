@@ -9,6 +9,7 @@ domainname = "example.com"
 manager_name = "dockerswarm"
 agent_name = "swarmnode"
 discovery_name = "consul"
+lb_name = 'lb'
 
 nodes = [
   { :hostname => "#{discovery_name}-01.#{domainname}", :ip => "192.168.35.101" },
@@ -19,6 +20,7 @@ nodes = [
   { :hostname => "#{agent_name}-01.#{domainname}", :ip => "192.168.35.121" },
   { :hostname => "#{agent_name}-02.#{domainname}", :ip => "192.168.35.122" },
   { :hostname => "#{agent_name}-03.#{domainname}", :ip => "192.168.35.123" },
+  { :hostname => "#{lb_name}-01.#{domainname}", :ip => "192.168.35.131" },
 
 
 ]
@@ -27,10 +29,11 @@ groups = {
     "#{agent_name}" => [], 
     "#{manager_name}" => [],
     "#{discovery_name}" => [],
+    "#{lb_name}" => [],
     "#{discovery_name}_master" => ["#{discovery_name}-01.#{domainname}"],
     "#{discovery_name}_server" => ["#{discovery_name}-02.#{domainname}",
     "#{discovery_name}-03.#{domainname}"], 
-    "all:children" => ["#{agent_name}","#{manager_name}","#{discovery_name}"], 
+    "all:children" => ["#{agent_name}","#{manager_name}","#{discovery_name}","#{lb_name}"], 
     }
 
 Vagrant.configure(2) do |config|
@@ -78,6 +81,7 @@ Vagrant.configure(2) do |config|
       :master_name => "#{manager_name}-01.#{domainname}",
       :replica_name => "#{manager_name}-02.#{domainname}",
       :master_ip => "192.168.35.124",
+      :master_ip_2 => "192.168.35.125",
       :agent_name => "#{agent_name}",
       :strategy => "spread",
     },
@@ -91,6 +95,8 @@ Vagrant.configure(2) do |config|
     groups["#{manager_name}"].push(hostname)
   when /#{Regexp.escape(discovery_name)}/
     groups["#{discovery_name}"].push(hostname)
+  when /#{Regexp.escape(lb_name)}/
+    groups["#{lb_name}"].push(hostname)
   end
 
     config.vm.define hostname, autostart: autostart do |config|    

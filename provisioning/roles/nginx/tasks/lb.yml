@@ -1,0 +1,12 @@
+---
+- name: Nginx Docker container
+  docker:
+    image: nginx
+    name: nginx-lb
+    state: reloaded
+    pull: always
+    publish_all_ports: true
+    restart_policy: unless-stopped
+    ports:
+      - "8080:80"
+    volume:  "/var/tmp/consul_template.ctmpl:/templates/service.ctmpl"

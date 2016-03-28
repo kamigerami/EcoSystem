@@ -1,0 +1,6 @@
+---
+- name: Nginx LB tasks
+  include: roles/nginx/tasks/{{ item }}
+  with_items:
+    - config.yml
+    - lb.yml

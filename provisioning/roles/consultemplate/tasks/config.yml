@@ -1,0 +1,10 @@
+---
+- name: link consul template to /usr/local/bin
+  file: src={{consul_install_dir}}/consul-template dest=/usr/local/bin/consul-template state=link
+
+- name: Templates are present
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items: templates

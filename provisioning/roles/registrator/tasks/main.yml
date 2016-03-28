@@ -7,4 +7,4 @@
     name: registrator
     volumes:
     - /var/run/docker.sock:/tmp/docker.sock
-    command: consul://"{{ common.master_ip }}"
+    command: -internal -resync 30 consul://"{{ common.master_ip }}"

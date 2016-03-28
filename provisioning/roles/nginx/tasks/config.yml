@@ -1,0 +1,6 @@
+---
+- name: Add directories and template file
+  copy: 
+    src: "consul_template.ctmpl" 
+    dest: "/var/tmp/consul_template.ctmpl"
+    mode: "0644" 

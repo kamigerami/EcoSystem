@@ -1,0 +1,29 @@
+- name: check if os packages is installed
+  stat:
+    path: /usr/bin/python-config
+  register: install_os_packages
+    
+- name: check if pip is installed
+  stat:
+    path: /bin/pip
+  register: install_pip 
+    
+- name: check if consul is installed
+  stat:
+    path: /opt/consul/consul
+  register: consul
+    
+- name: check if docker is installed
+  stat:
+    path: /bin/docker
+  register: install_docker
+    
+- name: check if docker-compose is installed
+  stat:
+    path: /bin/docker-compose
+  register: install_docker_compose
+
+- name: check if consul-template is installed
+  stat:
+    path: /usr/local/bin/consul-template
+  register: consul_template

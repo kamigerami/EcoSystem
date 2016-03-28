@@ -5,3 +5,4 @@
     - config.yml
     - install.yml
     - service.yml
+  when: install_docker.stat.exists == False

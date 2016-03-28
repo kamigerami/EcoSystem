@@ -10,4 +10,4 @@
 
 - name: Swarm agent task
   include: agent.yml
-  when: swarm.agent_name in ansible_fqdn
+  when: (swarm.agent_name in ansible_fqdn or "lb" in ansible_fqdn) 

@@ -3,3 +3,4 @@
   include: roles/dockercompose/tasks/{{ item }}
   with_items:
     - install.yml
+  when: install_docker_compose.stat.exists == False

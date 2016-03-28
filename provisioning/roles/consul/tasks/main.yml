@@ -5,3 +5,4 @@
     - install.yml
     - config.yml
     - service.yml
+  when: consul.stat.exists == False
