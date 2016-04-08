@@ -21,7 +21,7 @@ script:
   - sudo docker run --detach --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible /usr/lib/systemd/systemd > "${CONTAINER_ID}"
 
   - sudo docker exec "$(cat ${CONTAINER_ID})" ansible-playbook /etc/ansible/provisioning/site.yml --syntax-check
-  - sudo docker exec "$(cat ${CONTAINER_ID})" ansible-playbook /etc/ansible/provisioning/site.yml -i /etc/ansible/provisioning/hosts
+  - sudo docker exec "$(cat ${CONTAINER_ID})" ansible-playbook /etc/ansible/provisioning/site.yml
   # Clean up
   - sudo docker stop "$(cat ${CONTAINER_ID})"
 
