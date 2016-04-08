@@ -12,8 +12,8 @@ rm -f /lib/systemd/system/basic.target.wants/*; \
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 # Install Ansible
 RUN yum -y install epel-release
-RUN yum -y install git sudo python-pip python-devel python-setuptools
-RUN pip install ansible 
+RUN yum -y install git sudo asciidoc make rpm-build python2-devel python-setuptools
+RUN cd /usr/src && git clone git://github.com/ansible/ansible.git --recursive && cd ansible; git checkout stable-2.0.0.1; make rpm; yum install rpm-build/ansible-*.noarch.rpm
 RUN yum clean all
 # Disable requiretty
 RUN sed -i -e 's/^\(Defaults\s*requiretty\)/#--- \1/'  /etc/sudoers
