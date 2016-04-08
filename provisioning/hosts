@@ -1,8 +1,37 @@
-[dockerhost]
-dockerhost-[01:03].example.com
+consul-01.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 
+consul-02.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200 
+consul-03.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201 
+dockerswarm-01.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2202 
+dockerswarm-02.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2203 
+lb-01.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2206 
+swarmnode-01.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2204 
+swarmnode-02.example.com ansible_ssh_host=127.0.0.1 ansible_ssh_port=2205 
+
+[swarmnode]
+swarmnode-01.example.com
+swarmnode-02.example.com
 
 [dockerswarm]
 dockerswarm-01.example.com
+dockerswarm-02.example.com
 
 [consul]
-consul-[01:04].example.com
+consul-01.example.com
+consul-02.example.com
+consul-03.example.com
+
+[lb]
+lb-01.example.com
+
+[consul_master]
+consul-01.example.com
+
+[consul_server]
+consul-02.example.com
+consul-03.example.com
+
+[all:children]
+swarmnode
+dockerswarm
+consul
+lb
