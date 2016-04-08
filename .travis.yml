@@ -18,4 +18,4 @@ script:
   # We'll add some commands to test the role here.
   - ansible-playbook provisioning/site.yml --syntax-check
   # Run playbook
-  - ansible-playbook provisioning/site.yml --connection=local --sudo
+  - ansible-playbook provisioning/site.yml -i provisioning/hosts --connection=local
