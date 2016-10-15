@@ -1,0 +1,33 @@
+database:
+  env_file:
+    - .env
+  environment:
+    - MYSQL_PASSWORD
+    - MYSQL_DATABASE
+    - MYSQL_USER
+    - MYSQL_PORT
+    - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+  image: mysql/mysql-server
+  container_name: mysql-server
+  ports:
+        - "${MYSQL_PORT}:3306"
+  volumes:
+    - "./mysql:/var/lib/mysql"
+  command: ['--character-set-server=utf8', '--collation-server=utf8_general_ci']
+server:
+  env_file:
+    - .env
+  environment:
+    - CATTLE_DB_CATTLE_MYSQL_HOST=mysql-server
+    - CATTLE_DB_CATTLE_MYSQL_NAME=${MYSQL_DATABASE}
+    - CATTLE_DB_CATTLE_MYSQL_PORT=${MYSQL_PORT}
+    - CATTLE_DB_CATTLE_USERNAME=${MYSQL_USER}
+    - CATTLE_DB_CATTLE_PASSWORD=${MYSQL_PASSWORD}
+  container_name: rancher-server
+  image: rancher/server:v1.2.0-pre3
+  ports:
+    - "8080:8080"
+  links:
+    - "database:mysql-server"
+  volumes:
+    - "./mysql:/var/lib/mysql"
