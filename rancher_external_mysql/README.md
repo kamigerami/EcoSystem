@@ -1,4 +1,4 @@
-# EcoSystem
+# Rancher + External MYSQL db
 A Rancher single host server connecting to a MYSQL database both running in separate containers
 and mounting the mysql volume on the host.
 

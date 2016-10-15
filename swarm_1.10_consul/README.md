@@ -2,7 +2,7 @@
 
 <img src="architecture/architecture.jpg">
 
-# EcoSystem
+# Docker Swarm (1.10) + Consul
 A Consul, Dnsmasq, Docker Swarm, Docker compose, Artifactory ecosystem simulating a real world production setup
 
 This will bring up the following hosts all running Centos/7 with Consul master, Docker-Engine.
