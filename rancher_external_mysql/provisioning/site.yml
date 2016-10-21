@@ -3,5 +3,6 @@
   remote_user: vagrant
   roles:
     - { role: common, become: yes, become_method: sudo }
+    - { role: etcd, become: yes, become_method: sudo }
     - { role: docker, become: yes, become_method: sudo }
     - { role: dockercompose, become: yes, become_method: sudo }
