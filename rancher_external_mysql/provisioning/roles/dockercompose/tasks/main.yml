@@ -1,0 +1,5 @@
+---
+- name: Include Install files
+  include: roles/dockercompose/tasks/{{ item }}
+  with_items:
+    - install.yml

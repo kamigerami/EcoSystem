@@ -1,0 +1,54 @@
+# vi: set ft=ruby :
+
+# Build a Docker Swarm / Consul / Registrator EcoSystem
+# Created by Kami Gerami
+#
+
+# Vars
+domainname = "example.com"
+discovery_name = "host3"
+manager_name = "host1"
+agent_name = "host2"
+
+nodes = [
+  { :hostname => "#{discovery_name}-03.#{domainname}", :ip => "192.168.35.101" },
+  { :hostname => "#{manager_name}-01.#{domainname}", :ip => "192.168.35.124"},
+  { :hostname => "#{agent_name}-02.#{domainname}", :ip => "192.168.35.121" },
+]
+
+Vagrant.configure(2) do |config|
+
+  nodes.each do |node|
+ 
+  # set the host specific vars
+  hostname = node[:hostname]
+  ip = node[:ip]
+  memory = node[:memory] || "512" # set 512 as default if nothing else is set
+  run = node[:run] || "always" # set provisioner to run always if nothing else is set
+  autostart = node[:autostart] || "true" # set to always autostart machines unless set
+  box = node[:box] || "centos/7" # set to run centos/7 as default unless set
+  provisioner = node[:provisioner] || "ansible" # sets ansible as default provisioner
+  docker_cmd = node[:cmd] # docker command
+  docker_args = node[:args] # docker arguments
+  image = node[:image] # docker image 
+
+      config.vm.define hostname, autostart: autostart do |config|    
+
+      config.vm.box = box
+      config.vm.hostname = hostname
+      config.vm.network :private_network, ip: ip
+      #config.vm.boot_timeout = 800
+      #config.ssh.insert_key = true
+      config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
+      end
+
+      # always run ansible provisioner
+      config.vm.provision "ansible", run: run do |pv|
+            pv.playbook = "provisioning/site.yml"
+            pv.sudo = true
+      end
+
+    end
+  end
+end
