@@ -1,0 +1,20 @@
+---
+- name: Add local bin to $PATH
+  lineinfile: dest=/etc/environment regexp="^export PATH\=\/usr\/local\/bin" line="PATH=/usr/local/bin:$PATH"
+
+- name: Create Directories
+  file:
+    dest: "{{ item }}"
+    state: directory
+  with_items: directories
+
+- name: Download kubernetes
+  get_url: url={{ kubernetes_installer_url_base }}/{{kubernetes_installer_filename}}.tar.gz dest={{kubernetes_install_dir}}/{{kubernetes_installer_filename}}.tar.gz
+
+- name: Unarchive kubernetes
+  unarchive: copy=no src={{kubernetes_install_dir}}/{{ kubernetes_installer_filename }}.tar.gz dest={{ kubernetes_install_dir }}
+  register: kubernetes_installed
+
+- name: Unarchive kubernetes-server
+  unarchive: copy=no src={{kubernetes_install_dir}}/server/{{ kubernetes_installer_filename }}-server-linux-amd64.tar.gz dest={{ kubernetes_install_dir }}
+  register: kubernetes_installed

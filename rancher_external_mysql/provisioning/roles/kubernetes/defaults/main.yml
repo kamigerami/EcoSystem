@@ -1,0 +1,7 @@
+kubernetes_installer_url_base: "https://github.com/kubernetes/kubernetes/releases/download/{{ kubernetes_version }}"
+kubernetes_installer_filename: "kubernetes"
+kubernetes_version: v1.4.4
+kubernetes_install_dir: /opt/kubernetes
+
+directories:
+  - "{{ kubernetes_install_dir }}"

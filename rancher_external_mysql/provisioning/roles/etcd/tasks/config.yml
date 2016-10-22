@@ -1,7 +1,4 @@
 ---
-- name: source .bashrc
-  shell: source ~/.bashrc
-
 - name: copy etcd to /usr/local/bin
   copy: src={{etcd_install_dir}}/{{etcd_installer_filename}}/etcd dest=/usr/local/bin/etcd remote_src=yes mode='a+x'
   when: etcd_installed
