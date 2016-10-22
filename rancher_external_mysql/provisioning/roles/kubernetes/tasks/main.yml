@@ -3,3 +3,4 @@
   include: roles/kubernetes/tasks/{{ item }}
   with_items:
     - install.yml
+    - config.yml

@@ -17,4 +17,5 @@
   command: "python /tmp/get-pip.py"
 
 - name: Add local bin to $PATH
-  shell: "export PATH=/usr/local/bin:/bin:$PATH"
+  lineinfile: dest=/etc/profile.d/myexport.sh regexp="^export PATH" line="export PATH=/usr/local/bin:/bin:$PATH" state=present create=yes
+  become: yes

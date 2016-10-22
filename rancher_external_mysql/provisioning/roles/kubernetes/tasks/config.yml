@@ -1,7 +1,7 @@
 ---
 - name: Add service file to systemd
-  copy:
-    src: kube-apiserver.service
+  template:
+    src: roles/kubernetes/files/kube-apiserver.service
     dest: /etc/systemd/system/kube-apiserver.service
   notify:
     - restart systemd
