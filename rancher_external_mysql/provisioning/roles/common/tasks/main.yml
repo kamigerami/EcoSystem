@@ -15,3 +15,6 @@
 
 - name: Install pip.
   command: "python /tmp/get-pip.py"
+
+- name: Add local bin to $PATH
+  shell: "export PATH=/usr/local/bin:/bin:$PATH"

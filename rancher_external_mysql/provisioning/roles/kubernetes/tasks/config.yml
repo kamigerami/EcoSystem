@@ -1,14 +1,8 @@
 ---
-- name: copy hyperkube to /usr/local/bin
-  copy: src={{kubernetes_install_dir}}/{{kubernetes_installer_filename}}/server/bin/hyperkube dest=/usr/local/bin/hyperkube remote_src=yes mode='a+x'
-  when: kubernetes_installed
-
-- name: copy kubectl to /usr/local/bin
-  copy: src={{kubernetes_install_dir}}/{{kubernetes_installer_filename}}/server/bin/kubectl dest=/usr/local/bin/kubectl remote_src=yes mode='a+x'
-  when: kubernetes_installed
-
-- name: Update file permissions for binary
-  file: path=/usr/local/bin/{{ item }} state=touch mode="a+x"
-  with_items:
-    - hyperkube
-    - kubectl
+- name: Add service file to systemd
+  copy:
+    src: kube-apiserver.service
+    dest: /etc/systemd/system/kube-apiserver.service
+  notify:
+    - restart systemd
+    - enable and start kube-apiserver

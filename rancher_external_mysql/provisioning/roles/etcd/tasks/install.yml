@@ -1,12 +1,11 @@
 ---
-- name: Add local bin to $PATH
-  lineinfile: dest=/etc/environment regexp="^export PATH\=\/usr\/local\/bin" line="PATH=/usr/local/bin:$PATH"
-
 - name: Create Directories
   file:
-    dest: "{{ item }}"
+    dest: "{{ dirs }}"
     state: directory
-  with_items: directories
+  with_items: "{{ directories }}"
+  loop_control:
+    loop_var: dirs
 
 - name: Download etcd
   get_url: url={{ etcd_installer_url_base }}/{{etcd_installer_filename}}.tar.gz dest={{etcd_install_dir}}/{{etcd_installer_filename}}.tar.gz

@@ -1,20 +1,64 @@
 ---
-- name: Add local bin to $PATH
-  lineinfile: dest=/etc/environment regexp="^export PATH\=\/usr\/local\/bin" line="PATH=/usr/local/bin:$PATH"
+- name: Have kubectl already been copied?
+  stat: path=/usr/local/bin/kubectl
+  register: kubectl_exist
+
+- name: Have hyperkube already been copied?
+  stat: path=/usr/local/bin/hyperkube
+  register: hyperkube_exist
 
 - name: Create Directories
   file:
-    dest: "{{ item }}"
+    dest: "{{ item_directory }}"
     state: directory
-  with_items: directories
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
+  with_items: "{{ directories }}"
+  loop_control:
+    loop_var: item_directory
+
+- name: Verify if Kubernetes already has downloaded
+  local_action: stat path={{ kubernetes_install_dir }}/{{kubernetes_installer_filename}}.tar.gz
+  register: file_exist
+  become: no
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
 
 - name: Download kubernetes
-  get_url: url={{ kubernetes_installer_url_base }}/{{kubernetes_installer_filename}}.tar.gz dest={{kubernetes_install_dir}}/{{kubernetes_installer_filename}}.tar.gz
+  local_action: get_url url={{ kubernetes_installer_url_base }}/{{kubernetes_installer_filename}}.tar.gz dest={{ kubernetes_install_dir }}/{{kubernetes_installer_filename}}.tar.gz
+  become: no
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
+  register: download_kubernetes
+  ignore_errors: True
+
+- name: recursively synchronize files from management server to target
+  copy: 
+    src: "{{ kubernetes_install_dir }}/{{kubernetes_installer_filename}}.tar.gz" 
+    dest: "{{ kubernetes_install_dir }}/{{ kubernetes_installer_filename }}.tar.gz" 
+  register: kubernetes_copied
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
+  become: no
 
 - name: Unarchive kubernetes
-  unarchive: copy=no src={{kubernetes_install_dir}}/{{ kubernetes_installer_filename }}.tar.gz dest={{ kubernetes_install_dir }}
+  unarchive: copy=no src={{ kubernetes_install_dir }}/{{ kubernetes_installer_filename }}.tar.gz dest={{ kubernetes_install_dir }}/
   register: kubernetes_installed
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
 
 - name: Unarchive kubernetes-server
-  unarchive: copy=no src={{kubernetes_install_dir}}/server/{{ kubernetes_installer_filename }}-server-linux-amd64.tar.gz dest={{ kubernetes_install_dir }}
+  unarchive: copy=no src={{ kubernetes_install_dir }}/kubernetes/server/{{ kubernetes_installer_filename }}-server-linux-amd64.tar.gz dest={{ kubernetes_install_dir }}/
   register: kubernetes_installed
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
+
+- name: copy hyperkube to /usr/local/bin
+  copy: src={{kubernetes_install_dir}}/{{kubernetes_installer_filename}}/server/bin/hyperkube dest=/usr/local/bin/hyperkube remote_src=yes mode='a+x'
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
+
+- name: copy kubectl to /usr/local/bin
+  copy: src={{kubernetes_install_dir}}/{{kubernetes_installer_filename}}/server/bin/kubectl dest=/usr/local/bin/kubectl remote_src=yes mode='a+x'
+  when: (kubectl_exist.stat.exists == False or hyperkube_exist.stat.exists == False)
+
+- name: Update file permissions for binary
+  file: path=/usr/local/bin/{{ files }} state=touch mode="a+x"
+  with_items:
+    - hyperkube
+    - kubectl
+  loop_control:
+    loop_var: files

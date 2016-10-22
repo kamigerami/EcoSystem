@@ -25,8 +25,17 @@ Ansible roles will install and start:
 - docker version 1.12.2
 - docker-compose version 1.8.1
 - etcd version 3.0.12
+- kubernetes 1.4.4
 
-Todo: Kubernetes cluster setup
+It will download kubernetes.tar.gz locally first (to /var/tmp/)
+then copy it over to the remote vagrant hosts.
+
+# Requirements
+
+```
+ansible
+vagrant
+```
 
 # Structure
 
