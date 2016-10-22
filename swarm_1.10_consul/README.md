@@ -17,14 +17,14 @@ Please see ToDo (below). Will add a bunch of stuff continously
 Versions Installed in boxes right now (will always fetch latest):
 
 CentOS 7.1 
-Docker version 1.10.3, build 20f81dd
-docker-compose version 1.6.2, build 4d72027 
-swarm version 1.1.3, build 7e9c6bd
+Docker version 1.12.2, build bb80604
+docker-compose version 1.8.1, build 878cff1
+~~swarm version 1.1.3, build 7e9c6bd~~
 gliderlabs/registrator v6
 pip (8.1.1)
 six (1.10.0)
 setuptools (0.9.8)
-docker-py (1.7.2)
+docker-py (1.10.4)
 consul (0.6.4)
 
 

@@ -16,6 +16,18 @@ docker
 docker-compose
 ```
 
+# Optional Vagrant Kubernetes setup
+
+Vagrantfile will setup 3 hosts on centos/7.
+
+Ansible roles will install and start:
+
+- docker version 1.12.2
+- docker-compose version 1.8.1
+- etcd version 3.0.12
+
+Todo: Kubernetes cluster setup
+
 # Structure
 
 Container 1: rancher-server -> Container 2
