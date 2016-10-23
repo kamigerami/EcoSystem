@@ -1,0 +1,5 @@
+---
+- name: Kubernetes - Include Install
+  include: roles/kubernetes/tasks/{{ item }}
+  with_items:
+    - install.yml

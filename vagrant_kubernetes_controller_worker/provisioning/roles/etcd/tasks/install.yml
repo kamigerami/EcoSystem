@@ -1,0 +1,15 @@
+---
+- name: Create Directories
+  file:
+    dest: "{{ dirs }}"
+    state: directory
+  with_items: "{{ directories }}"
+  loop_control:
+    loop_var: dirs
+
+- name: Download etcd
+  get_url: url={{ etcd_installer_url_base }}/{{etcd_installer_filename}}.tar.gz dest={{etcd_install_dir}}/{{etcd_installer_filename}}.tar.gz
+
+- name: Unarchive etcd
+  unarchive: copy=no src={{etcd_install_dir}}/{{ etcd_installer_filename }}.tar.gz dest={{ etcd_install_dir }}
+  register: etcd_installed

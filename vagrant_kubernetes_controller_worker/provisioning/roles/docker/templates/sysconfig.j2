@@ -1,0 +1,5 @@
+{% if ansible_distribution_major_version == "7" %}
+DOCKER_OPTS="{{ docker_opts }}"
+{% elif ansible_distribution_major_version == "6" %}
+other_args="{{ docker_opts }}"
+{% endif %}

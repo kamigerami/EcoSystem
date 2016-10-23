@@ -1,0 +1,5 @@
+---
+- name: Kubernetes-controller - Include config files
+  include: roles/kubernetes-controller/tasks/{{ item }}
+  with_items:
+    - config.yml

@@ -1,0 +1,6 @@
+---
+- name: Add service file kubelet
+  template: src=roles/kubernetes-worker/files/kubelet.service dest=/etc/systemd/system/kubelet.service
+  notify:
+    - restart systemd
+    - enable and start kubelet

@@ -1,0 +1,10 @@
+- name: start docker
+  service:
+    name: docker
+    state: started
+
+- name: clean key.json file
+  file: path=/etc/docker/key.json state=absent
+
+- name: Reload systemd
+  command: systemctl daemon-reload

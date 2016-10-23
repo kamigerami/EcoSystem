@@ -1,0 +1,18 @@
+---
+- name: Add service file kube-apiserver.service to systemd
+  template: src=roles/kubernetes-controller/files/kube-apiserver.service dest=/etc/systemd/system/kube-apiserver.service
+  notify:
+    - enable and start kube-apiserver
+    - restart systemd
+      
+- name: Add service file kube-scheduler.service to systemd
+  template: src=roles/kubernetes-controller/files/kube-scheduler.service dest=/etc/systemd/system/kube-scheduler.service
+  notify:
+    - enable and start kube-scheduler
+    - restart systemd
+ 
+- name: Add service file kube-controller-manager.service to systemd
+  template: src=roles/kubernetes-controller/files/kube-controller-manager.service dest=/etc/systemd/system/kube-controller-manager.service
+  notify:
+    - enable and start kube-controller-manager
+    - restart systemd

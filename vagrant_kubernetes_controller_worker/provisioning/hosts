@@ -1,0 +1,6 @@
+[controller]
+controller-01.example.com
+
+[worker]
+worker-01.example.com
+worker-02.example.com

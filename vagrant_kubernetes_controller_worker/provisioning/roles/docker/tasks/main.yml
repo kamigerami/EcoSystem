@@ -1,0 +1,7 @@
+---
+- name: Include Config, Install, Service files
+  include: roles/docker/tasks/{{ item }}
+  with_items:
+    - config.yml
+    - install.yml
+    - service.yml
