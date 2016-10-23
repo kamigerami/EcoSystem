@@ -1,8 +1,0 @@
----
-- name: Add service file to systemd
-  template:
-    src: roles/kubernetes/files/kube-apiserver.service
-    dest: /etc/systemd/system/kube-apiserver.service
-  notify:
-    - restart systemd
-    - enable and start kube-apiserver

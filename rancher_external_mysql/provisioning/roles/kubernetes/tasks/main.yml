@@ -1,6 +1,0 @@
----
-- name: Include Install, config, services files
-  include: roles/kubernetes/tasks/{{ item }}
-  with_items:
-    - install.yml
-    - config.yml

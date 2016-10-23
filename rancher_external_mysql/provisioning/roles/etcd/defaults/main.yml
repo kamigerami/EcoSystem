@@ -1,7 +1,0 @@
-etcd_installer_url_base: "https://github.com/coreos/etcd/releases/download/{{ etcd_version }}"
-etcd_installer_filename: "etcd-{{ etcd_version }}-linux-amd64"
-etcd_version: v3.0.12
-etcd_install_dir: /opt/etcd
-
-directories:
-  - "{{ etcd_install_dir }}"

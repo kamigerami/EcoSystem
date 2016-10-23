@@ -1,3 +1,0 @@
----
-# Options passed to the docker daemon at start
-docker_opts: "-H 0.0.0.0:2375"

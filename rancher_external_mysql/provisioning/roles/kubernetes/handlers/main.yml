@@ -1,5 +1,0 @@
-- name: restart systemd
-  command: systemctl daemon-reload
-
-- name: enable and start kube-apiserver
-  service: name=kube-apiserver state=started enabled=yes
