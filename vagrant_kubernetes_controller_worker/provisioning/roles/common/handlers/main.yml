@@ -1,0 +1,12 @@
+---
+- name: restart systemd
+  command: systemctl daemon-reload
+
+- name: enable docker
+  service: name=docker state=started enabled=yes
+
+- name: enable kubelet
+  service: name=kubelet state=started enabled=yes
+
+- name: repolist
+  command: yum clean all && yum repolist

@@ -7,7 +7,7 @@ Requires=docker.service
 [Service]
 ExecStart=/usr/local/bin/hyperkube \
   kubelet \
-  --api-servers=http://{{ controller.ip }}:8080 \
+  --api-servers=http://{{ master.ip }}:8080 \
   --allow-privileged=true
 Restart=on-failure
 RestartSec=5

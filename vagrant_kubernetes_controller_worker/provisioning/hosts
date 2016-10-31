@@ -1,5 +1,5 @@
-[controller]
-controller-01.example.com
+[master]
+master-01.example.com
 
 [worker]
 worker-01.example.com

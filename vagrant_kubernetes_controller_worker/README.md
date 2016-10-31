@@ -1,4 +1,4 @@
-# Vagrant - Kubernetes controller, etcd, kube-apiserver, kube-scheduler setup + worker
+# Vagrant - Kubernetes master, etcd, kube-apiserver, kube-scheduler setup + worker
 
 Vagrantfile will setup 3 hosts on centos/7.
 
@@ -15,7 +15,7 @@ then copy it over to the remote vagrant hosts.
 # Structure
 
 ```
-controller-01.example.com - kube-controller-manager, kube-apiserver, kube-scheduler, etcd
+master-01.example.com - kube-master-manager, kube-apiserver, kube-scheduler, etcd
 worker-01.example.com - kubectl
 worker-02.example.com - kubectl
 ```
@@ -77,12 +77,12 @@ $ tree
     │   │   └── tasks
     │   │       ├── install.yml
     │   │       └── main.yml
-    │   ├── kubernetes-controller
+    │   ├── kubernetes-master
     │   │   ├── defaults
     │   │   │   └── main.yml
     │   │   ├── files
     │   │   │   ├── kube-apiserver.service
-    │   │   │   ├── kube-controller-manager.service
+    │   │   │   ├── kube-master-manager.service
     │   │   │   └── kube-scheduler.service
     │   │   ├── handlers
     │   │   │   └── main.yml

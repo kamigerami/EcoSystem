@@ -1,0 +1,26 @@
+---
+- name: kubernetes master ip debug
+  debug: {{ master.ip }}
+
+- name: initialize master
+  command: "kubeadm init --api-advertise-addresses={{ master.ip }}"
+  register: kubeadm_token
+  poll: 10
+#
+#- name: Add service file kube-apiserver.service to systemd
+#  template: src=roles/kubernetes-master/files/kube-apiserver.service dest=/etc/systemd/system/kube-apiserver.service
+#  notify:
+#    - enable and start kube-apiserver
+#    - restart systemd
+#      
+#- name: Add service file kube-scheduler.service to systemd
+#  template: src=roles/kubernetes-master/files/kube-scheduler.service dest=/etc/systemd/system/kube-scheduler.service
+#  notify:
+#    - enable and start kube-scheduler
+#    - restart systemd
+# 
+#- name: Add service file kube-master-manager.service to systemd
+#  template: src=roles/kubernetes-master/files/kube-master-manager.service dest=/etc/systemd/system/kube-master-manager.service
+#  notify:
+#    - enable and start kube-master-manager
+#    - restart systemd

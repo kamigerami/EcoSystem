@@ -7,5 +7,5 @@
 - name: enable and start kube-scheduler
   service: name=kube-scheduler state=started enabled=yes
 
-- name: enable and start kube-controller-manager
-  service: name=kube-controller-manager state=started enabled=yes
+- name: enable and start kube-master-manager
+  service: name=kube-master-manager state=started enabled=yes

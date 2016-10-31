@@ -1,14 +1,29 @@
 ---
+- name: Add Kubernetes repo
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes repo
+    baseurl: http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg
+    gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgcheck: yes
+
 - name: Install os packages
   yum: name={{item}} state=present
   with_items:
-  - unzip
-  - bc
+  - docker 
+  - kubelet 
+  - kubeadm 
+  - kubectl 
+  - kubernetes-cni
   - net-tools
   - nmap-ncat
   - vim
   - python-devel
   - python-setuptools
+  notify: 
+    - enable docker
+    - enable kubelet
 
 - name: Download pip.
   get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp

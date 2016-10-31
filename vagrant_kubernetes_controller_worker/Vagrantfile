@@ -6,19 +6,21 @@
 
 # Vars
 domainname = "example.com"
-controller = "controller"
+master = "master"
 worker = "worker"
 
 nodes = [
-  { :hostname => "#{controller}-01.#{domainname}", :ip => "192.168.1.101" },
+  { :hostname => "#{master}-01.#{domainname}", :ip => "192.168.1.101" },
   { :hostname => "#{worker}-01.#{domainname}", :ip => "192.168.10.121"},
   { :hostname => "#{worker}-02.#{domainname}", :ip => "192.168.20.122" },
+  { :hostname => "#{worker}-03.#{domainname}", :ip => "192.168.30.123" },
+  { :hostname => "#{worker}-04.#{domainname}", :ip => "192.168.40.124" },
 ]
 
 groups = { 
-  "#{controller}" => ["#{controller}-01.#{domainname}"],
-  "#{worker}" => ["#{worker}-01.#{domainname}", "#{worker}-02.#{domainname}"],
-  "all:children" => ["#{controller}","#{worker}"]
+  "#{master}" => ["#{master}-01.#{domainname}"],
+  "#{worker}" => ["#{worker}-01.#{domainname}", "#{worker}-02.#{domainname}", "#{worker}-03.#{domainname}", "#{worker}-04.#{domainname}"],
+  "all:children" => ["#{master}","#{worker}"]
 }
 
 Vagrant.configure(2) do |config|
@@ -38,24 +40,31 @@ Vagrant.configure(2) do |config|
   image = node[:image] # docker image 
 
   # create ansible.extra_vars
-  ansible_vars = {
-    :controller => {
-      :hostname => "#{controller}-01.#{domainname}",
-      :ip => "192.168.1.101",
-    } 
-  }
-    
+  if hostname.start_with?("#{master}")
+
+    ansible_vars = {
+      :master => {
+        :hostname => "#{hostname}",
+        :ip => "#{ip}",
+      } 
+    }
+  end
+      
     config.vm.define hostname, autostart: autostart do |config|    
 
       config.vm.box = box
       config.vm.hostname = hostname
       config.vm.network :private_network, ip: ip
-      #config.vm.boot_timeout = 800
-      #config.ssh.insert_key = true
       config.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", memory, "--name", hostname]
       end
 
+     # config.vm.provision "shell", run: "always", path: "kubeinstall.sh"
+
+      #if hostname.start_with?("#{master}")
+      #  config.vm.provision "shell", run: "always", path: "master.sh"
+      #end
+     
       # always run ansible provisioner
       config.vm.provision "ansible", run: run do |pv|
             pv.playbook = "provisioning/site.yml"
