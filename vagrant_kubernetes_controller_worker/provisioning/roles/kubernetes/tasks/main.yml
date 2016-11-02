@@ -1,17 +1,19 @@
 ---
-- name: Is master already initialized?
-  stat: path=/etc/kubernetes
+- name: is kubernetes already initialized
+  stat: path=/etc/kubernetes/kubelet.conf
   register: kubernetes_path
-  when: inventory_hostname in groups['master']
 
-- debug: msg="kubeadm init --api-advertise-addresses={{ master.ip }}"
+- debug: msg="kubeadm init --api-advertise-addresses={{ master.ip }} --token {{ init_token }}"
   when: inventory_hostname in groups['master']
 
 - name: initialize master
-  command: "kubeadm init --api-advertise-addresses={{ master.ip }}"
-  register: kubeadm_token
-  when: 
-    - inventory_hostname in groups['master'] 
+  command: "kubeadm init --api-advertise-addresses={{ master.ip }} --token {{ init_token }}"
+  when:
+    - inventory_hostname in groups['master']
     - kubernetes_path.stat.exists == false
 
-- debug: var=kubeadm_token
+- name: join nodes
+  command: "kubeadm join --token {{ init_token }} {{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
+  when: 
+    - inventory_hostname in groups['worker'] 
+    - kubernetes_path.stat.exists == false
