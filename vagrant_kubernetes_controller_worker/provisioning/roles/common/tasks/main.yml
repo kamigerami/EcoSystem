@@ -25,12 +25,11 @@
     - enable docker
     - enable kubelet
 
-- name: Download pip.
-  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp
-
-- name: Install pip.
-  command: "python /tmp/get-pip.py"
+- meta: flush_handlers
 
 - name: Add local bin to $PATH
   lineinfile: dest=/etc/profile.d/myexport.sh regexp="^export PATH" line="export PATH=/usr/local/bin:/bin:$PATH" state=present create=yes
   become: yes
+
+- name: Disable selinux
+  command: setenforce 0

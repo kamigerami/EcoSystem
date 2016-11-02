@@ -1,5 +1,0 @@
----
-- name: Kubernetes worker - Include config
-  include: roles/kubernetes-worker/tasks/{{ item }}
-  with_items:
-    - config.yml

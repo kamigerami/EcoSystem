@@ -1,19 +1,7 @@
 ---
 - hosts: all
-  remote_user: vagrant
-  roles:
-    - { role: common, become: yes, become_method: sudo }
-      #- { role: docker, become: yes, become_method: sudo }
-      #- { role: dockercompose, become: yes, become_method: sudo }
-      #- { role: kubernetes, become: yes, become_method: sudo }
+  become: yes
 
-- hosts: master
-  remote_user: vagrant
   roles:
-    #- { role: etcd, become: yes, become_method: sudo }
-    - { role: kubernetes-master, become: yes, become_method: sudo }
- 
-- hosts: worker
-  remote_user: vagrant
-  roles:
-    - { role: kubernetes-worker, become: yes, become_method: sudo }
+    -  role: common
+    -  role: kubernetes

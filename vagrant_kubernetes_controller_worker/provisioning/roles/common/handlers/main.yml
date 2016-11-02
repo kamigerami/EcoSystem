@@ -3,10 +3,10 @@
   command: systemctl daemon-reload
 
 - name: enable docker
-  service: name=docker state=started enabled=yes
+  service: name=docker state=running enabled=yes
 
 - name: enable kubelet
-  service: name=kubelet state=started enabled=yes
+  service: name=kubelet state=running enabled=yes
 
 - name: repolist
   command: yum clean all && yum repolist

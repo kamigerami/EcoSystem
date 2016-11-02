@@ -1,5 +1,17 @@
 ---
-- name: Kubernetes - Include Install
-  include: roles/kubernetes/tasks/{{ item }}
-  with_items:
-    - install.yml
+- name: Is master already initialized?
+  stat: path=/etc/kubernetes
+  register: kubernetes_path
+  when: inventory_hostname in groups['master']
+
+- debug: msg="kubeadm init --api-advertise-addresses={{ master.ip }}"
+  when: inventory_hostname in groups['master']
+
+- name: initialize master
+  command: "kubeadm init --api-advertise-addresses={{ master.ip }}"
+  register: kubeadm_token
+  when: 
+    - inventory_hostname in groups['master'] 
+    - kubernetes_path.stat.exists == false
+
+- debug: var=kubeadm_token
