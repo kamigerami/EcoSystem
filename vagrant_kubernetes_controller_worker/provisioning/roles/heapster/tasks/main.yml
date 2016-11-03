@@ -1,0 +1,14 @@
+---
+- name: Create heapster (grafana, heapster, influxdb) deployment
+  command: "kubectl create -f {{ heapster }}"
+  when: inventory_hostname in groups['master']
+  with_items:
+    - https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana-deployment.yaml
+    - https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/grafana-service.yaml
+    - https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster-deployment.yaml
+    - https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/heapster-service.yaml
+    - https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb-deployment.yaml
+    - https://raw.githubusercontent.com/kubernetes/heapster/master/deploy/kube-config/influxdb/influxdb-service.yaml
+  loop_control:
+    loop_var: heapster
+  ignore_errors: true

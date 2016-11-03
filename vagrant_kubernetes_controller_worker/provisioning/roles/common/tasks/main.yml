@@ -18,12 +18,22 @@
   - kubernetes-cni
   - net-tools
   - nmap-ncat
+  - wget
   - vim
   - python-devel
   - python-setuptools
   notify: 
     - enable docker
     - enable kubelet
+
+- name: Update kubeadm.conf with new CIDR for pods
+  lineinfile:
+    backup: True
+    backrefs: True
+    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: '(Environment=.KUBELET_EXTRA_ARGS=.*)"'
+    insertafter: "KUBELET_EXTRA_ARGS="
+    line: '\1 --pod-cidr={{ calico_ip_range }} --node-ip={{ hostvars[inventory_hostname]["ansible_eth1"]["ipv4"]["address"] }}"'
 
 - meta: flush_handlers
 

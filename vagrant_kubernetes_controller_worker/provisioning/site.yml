@@ -2,7 +2,7 @@
 - hosts: all
   vars:
     - init_token: random.1234
-    - calico_ip_range: 10.245.0.0/16
+    - calico_ip_range: 10.245.0.0
     - cluster_ip: 100.78.232.136
     - yml_files_dir: /etc/kubernetes/yml
   become: yes
@@ -12,3 +12,4 @@
     -  role: kubernetes
     -  role: etcd
     -  role: calico
+    -  role: heapster

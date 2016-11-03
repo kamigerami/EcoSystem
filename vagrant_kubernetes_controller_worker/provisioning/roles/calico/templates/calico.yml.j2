@@ -263,7 +263,7 @@ spec:
           args: 
           - "pool"
           - "add"
-          - "{{ calico_ip_range }}"
+          - "{{ calico_ip_range }}/16"
           - "--ipip"
           - "--nat-outgoing"
           env:

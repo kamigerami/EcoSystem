@@ -1,4 +1,19 @@
 ---
+- name: Is calico /opt/cni/ directory created?
+  stat: path="/opt/cni/bin/"
+  register: calico_dir_exists
+
+- name: Download calicoctl
+  get_url: url=http://www.projectcalico.org/builds/calicoctl dest=/usr/local/bin/calicoctl mode=a+x 
+
+- name: Download calico
+  get_url: url=https://github.com/projectcalico/calico-cni/releases/download/v1.4.3/calico dest=/opt/cni/bin/calico mode=a+x 
+  when: calico_dir_exists.stat.exists
+
+- name: Download calico-ipam
+  get_url: url=https://github.com/projectcalico/calico-cni/releases/download/v1.4.3/calico-ipam dest=/opt/cni/bin/calico-ipam mode=a+x 
+  when: calico_dir_exists.stat.exists
+
 - name: Is yml directory created?
   stat: path="{{yml_files_dir}}"
   register: yml_files_dir_exists
@@ -15,5 +30,10 @@
   template: src=calico.yml.j2 dest="{{yml_files_dir}}/calico.yml"
   when: yml_files_dir_exists.stat.exists
 
+- name: start calico node
+  command: /usr/local/bin/calicoctl node
+  when: "inventory_hostname in groups['master']"
+
 - name: kubectl apply calico
   command: "kubectl apply -f {{yml_files_dir}}/calico.yml"
+  when: "inventory_hostname in groups['master']"

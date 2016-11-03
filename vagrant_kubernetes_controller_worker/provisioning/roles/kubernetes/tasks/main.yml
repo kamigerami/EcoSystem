@@ -3,17 +3,17 @@
   stat: path=/etc/kubernetes/kubelet.conf
   register: kubernetes_path
 
-- debug: msg="kubeadm init --api-advertise-addresses={{ master.ip }} --token {{ init_token }}"
+- debug: msg="kubeadm init --api-advertise-addresses={{ id.master_ip }} --token {{ init_token }}"
   when: inventory_hostname in groups['master']
 
 - name: initialize master
-  command: "kubeadm init --api-advertise-addresses={{ master.ip }} --token {{ init_token }}"
+  command: "kubeadm init --api-advertise-addresses={{ id.master_ip }} --token {{ init_token }}"
   when:
     - inventory_hostname in groups['master']
     - kubernetes_path.stat.exists == false
 
 - name: join nodes
-  command: "kubeadm join --token {{ init_token }} {{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}"
+  command: "kubeadm join --token {{ init_token }} {{ id.master_ip }}"
   when: 
     - inventory_hostname in groups['worker'] 
     - kubernetes_path.stat.exists == false
