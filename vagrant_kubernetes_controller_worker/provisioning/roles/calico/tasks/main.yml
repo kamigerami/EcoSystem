@@ -1,0 +1,19 @@
+---
+- name: Is yml directory created?
+  stat: path="{{yml_files_dir}}"
+  register: yml_files_dir_exists
+
+- name: Create yml directory
+  file: path="{{yml_files_dir}}" state=directory
+  when: not yml_files_dir_exists.stat.exists
+
+- name: Is yml directory created?
+  stat: path="{{yml_files_dir}}"
+  register: yml_files_dir_exists
+
+- name: Place calico yml file
+  template: src=calico.yml.j2 dest="{{yml_files_dir}}/calico.yml"
+  when: yml_files_dir_exists.stat.exists
+
+- name: kubectl apply calico
+  command: "kubectl apply -f {{yml_files_dir}}/calico.yml"

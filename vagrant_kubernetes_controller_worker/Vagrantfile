@@ -10,7 +10,7 @@ master = "master"
 worker = "worker"
 
 nodes = [
-  { :hostname => "#{master}-01.#{domainname}", :ip => "192.168.1.101" },
+  { :hostname => "#{master}-01.#{domainname}", :ip => "192.168.1.101", :memory => "2048" },
   { :hostname => "#{worker}-01.#{domainname}", :ip => "192.168.10.121"},
   { :hostname => "#{worker}-02.#{domainname}", :ip => "192.168.20.122" },
   { :hostname => "#{worker}-03.#{domainname}", :ip => "192.168.30.123" },
