@@ -7,3 +7,4 @@
   roles:
     -  role: common
     -  role: kubernetes
+    -  role: etcd
