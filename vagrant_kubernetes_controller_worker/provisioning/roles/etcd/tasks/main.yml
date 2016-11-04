@@ -21,7 +21,7 @@
   when: etcd_exist.stat.exists == False 
 
 - name: copy etcd to /bin
-  copy: src={{etcd_install_dir}}/{{ etcd_release_binary }} dest=/bin/{{ etcd_release_binary }} remote_src=yes mode='a+x'
+  copy: src={{etcd_install_dir}}/{{ etcd_release_filename }}/{{ etcd_release_binary }} dest=/bin/{{ etcd_release_binary }} remote_src=yes mode='a+x'
   when: "{{ etcd_unarchived }}"
   with_items: 
     - etcd

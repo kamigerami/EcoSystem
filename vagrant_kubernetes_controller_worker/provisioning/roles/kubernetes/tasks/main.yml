@@ -16,6 +16,65 @@
   register: kubernetes_release_exist
   become: no
 
+- name: place make-ca-cert.sh file on host
+  copy: src=make-ca-cert.sh dest={{ kubernetes_download_dir }} mode=a+x
+  when: inventory_hostname in groups['master']
+
+- name: run make-ca-cert command
+  command: "./make-ca-cert.sh {{ id.master_ip }} IP:{{ id.master_ip }},IP:{{ kubelet_cluster_dns_ip }}%.*.1,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.{{ kubelet_cluster_domain }}"
+  args: 
+    chdir: "{{ kubernetes_download_dir}}"
+  when: inventory_hostname in groups['master']
+#
+#- name: Download easy rsa 
+#  get_url: url={{ kubernetes_cert_url }} dest={{ kubernetes_download_dir }}/easy-rsa.tar.gz
+#  when: inventory_hostname in groups['master']
+#
+#- name: Unarchive easy rsa
+#  unarchive: copy=no src={{ kubernetes_download_dir }}/easy-rsa.tar.gz dest={{ kubernetes_download_dir }}
+#  when: inventory_hostname in groups['master']
+#
+#- name: run easyrsa init
+#  command: ./easyrsa init-pki > /dev/null 2>&1
+#  args:
+#    chdir: "{{kubernetes_download_dir}}/easy-rsa-master/easyrsa3" 
+#    creates: "{{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3/easyrsa" 
+#  when: inventory_hostname in groups['master']
+#
+#- name: run easyrsa batch
+#  command: ./easyrsa --batch "--req-cn={{ hostvars[inventory_hostname]['ansible_eth1']['ipv4']['address'] }}@`date +%s`" build-ca nopass > /dev/null 2&1
+#  args:
+#    chdir: "{{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3"
+#  when: inventory_hostname in groups['master']
+#
+#- name: run easyrsa subject-alt-names 
+#  command:  ./easyrsa --subject-alt-name="{{inventory_hostname}}" build-server-full kubernetes-master nopass > /dev/null 2>&1
+#  when: inventory_hostname in groups['master']
+#
+#- name: copy server.cert to certdir
+#  copy: src={{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3/pki/issued/kubernetes-master.crt dest={{ kubernetes_pki_dir }}/server.cert mode=0660
+#  when: inventory_hostname in groups['master']
+#
+#- name: copy server.key to certdir
+#  copy: src={{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3/pki/issued/kubernetes-master.key dest={{ kubernetes_pki_dir }}/server.key mode=0660
+#  when: inventory_hostname in groups['master']
+#
+#- name: run easyrsa build full client
+#  command:  ./easyrsa build-client-full kubecfg nopass > /dev/null 2>&1
+#  when: inventory_hostname in groups['master']
+#
+#- name: copy ca.crt to certdir
+#  copy: src={{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3/pki/ca.crt dest={{ kubernetes_pki_dir }}/ca.crt
+#  when: inventory_hostname in groups['master']
+#
+#- name: copy kubecfg.crt to certdir
+#  copy: src={{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3/pki/issued/kubecfg.crt dest={{ kubernetes_pki_dir }}/kubecfg.crt
+#  when: inventory_hostname in groups['master']
+#
+#- name: copy kubecfg.key to certdir
+#  copy: src={{ kubernetes_download_dir }}/easy-rsa-master/easyrsa3/pki/issued/kubecfg.key dest={{ kubernetes_pki_dir }}/kubecfg.key
+#  when: inventory_hostname in groups['master']
+#
 - name: Download kubernetes
   local_action: get_url url={{ kubernetes_release_url_base }}/{{ kubernetes_release_server_filename }}.tar.gz dest={{ kubernetes_download_dir }}/{{kubernetes_release_server_filename }}.tar.gz
   become: no
@@ -59,8 +118,9 @@
     regexp: '(Environment=.KUBELET_EXTRA_ARGS=.*)"'
     insertafter: "KUBELET_EXTRA_ARGS="
     line: '\1 --pod-cidr={{ calico_ip_range }} --node-ip={{ hostvars[inventory_hostname]["ansible_eth1"]["ipv4"]["address"] }}"'
-    notify:
-      - restart systemd
-      - enable kubelet
 
-
+- name: restart and enable services
+  command: /bin/true
+  notify:
+    - restart systemd
+    - enable kubelet

@@ -2,6 +2,7 @@
 kubernetes_release_url_base: "https://storage.googleapis.com/kubernetes-release/release/v1.4.5{{ kubernetes_version }}/"
 kubernetes_release_server_filename: "kubernetes-server-linux-amd64"
 kubernetes_version: v1.4.5
+kubernetes_cert_url: "https://storage.googleapis.com/kubernetes-release/easy-rsa/easy-rsa.tar.gz"
 
 # binaries
 kubernetes_binaries:
@@ -29,3 +30,4 @@ directories:
 # Kubelet conf
 kubelet_cluster_dns_ip: 100.64.0.10
 kubelet_cluster_domain: "cluster.local"
+
