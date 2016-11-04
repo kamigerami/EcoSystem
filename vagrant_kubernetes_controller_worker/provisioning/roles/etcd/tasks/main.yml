@@ -1,6 +1,30 @@
 ---
-- name: Include Install, config, services files
-  include: roles/etcd/tasks/{{ item }}
-  with_items:
-    - install.yml
-    - config.yml
+- name: Have etcd already been copied?
+  stat: path={{etcd_install_dir}}/etcd
+  register: etcd_exist
+
+- name: Create Directories
+  file:
+    dest: "{{ item_dirs }}"
+    state: directory
+  with_items: "{{ directories }}"
+  loop_control:
+    loop_var: item_dirs
+
+- name: Download etcd
+  get_url: url={{ etcd_release_url_base }}/{{etcd_release_filename}}.tar.gz dest={{etcd_install_dir}}/{{etcd_release_filename}}.tar.gz
+  when: etcd_exist.stat.exists == False 
+
+- name: Unarchive etcd
+  unarchive: copy=no src={{etcd_install_dir}}/{{ etcd_release_filename }}.tar.gz dest={{ etcd_install_dir }}
+  register: etcd_unarchived
+  when: etcd_exist.stat.exists == False 
+
+- name: copy etcd to /bin
+  copy: src={{etcd_install_dir}}/{{ etcd_release_binary }} dest=/bin/{{ etcd_release_binary }} remote_src=yes mode='a+x'
+  when: "{{ etcd_unarchived }}"
+  with_items: 
+    - etcd
+    - etcdctl
+  loop_control:
+    loop_var: etcd_release_binary

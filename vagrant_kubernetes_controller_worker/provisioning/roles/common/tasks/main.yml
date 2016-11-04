@@ -4,8 +4,7 @@
     name: kubernetes
     description: Kubernetes repo
     baseurl: http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
-    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg
-    gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     gpgcheck: yes
 
 - name: Install os packages
@@ -24,22 +23,6 @@
   - python-setuptools
   notify: 
     - enable docker
-    - enable kubelet
-
-- name: Update kubeadm.conf with new CIDR for pods
-  lineinfile:
-    backup: True
-    backrefs: True
-    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    regexp: '(Environment=.KUBELET_EXTRA_ARGS=.*)"'
-    insertafter: "KUBELET_EXTRA_ARGS="
-    line: '\1 --pod-cidr={{ calico_ip_range }} --node-ip={{ hostvars[inventory_hostname]["ansible_eth1"]["ipv4"]["address"] }}"'
-
-- meta: flush_handlers
-
-- name: Add local bin to $PATH
-  lineinfile: dest=/etc/profile.d/myexport.sh regexp="^export PATH" line="export PATH=/usr/local/bin:/bin:$PATH" state=present create=yes
-  become: yes
 
 - name: Disable selinux
   command: setenforce 0

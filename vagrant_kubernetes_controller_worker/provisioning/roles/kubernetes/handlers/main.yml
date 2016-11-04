@@ -1,0 +1,6 @@
+---
+- name: restart systemd
+  command: systemctl daemon-reload
+
+- name: enable kubelet
+  service: name=kubelet state=running enabled=yes

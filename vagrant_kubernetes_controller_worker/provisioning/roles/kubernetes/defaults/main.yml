@@ -1,0 +1,31 @@
+# Kubernetes release
+kubernetes_release_url_base: "https://storage.googleapis.com/kubernetes-release/release/v1.4.5{{ kubernetes_version }}/"
+kubernetes_release_server_filename: "kubernetes-server-linux-amd64"
+kubernetes_version: v1.4.5
+
+# binaries
+kubernetes_binaries:
+  -  hyperkube
+  -  kube-apiserver
+  -  kube-dns
+  -  kube-proxy
+  -  kube-scheduler
+  -  kubectl
+  -  kubelet
+  -  kubemark
+
+# directories
+kubernetes_download_dir: /var/tmp
+kubernetes_home_dir: /etc/kubernetes/
+kubernetes_manifest_dir: "{{ kubernetes_home_dir }}/manifests"
+kubernetes_pki_dir: "{{ kubernetes_home_dir }}/pki"
+
+directories:
+  - "{{ kubernetes_download_dir }}"
+  - "{{ kubernetes_home_dir }}"
+  - "{{ kubernetes_manifest_dir }}"
+  - "{{ kubernetes_pki_dir }}" 
+
+# Kubelet conf
+kubelet_cluster_dns_ip: 100.64.0.10
+kubelet_cluster_domain: "cluster.local"
