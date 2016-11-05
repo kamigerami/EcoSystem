@@ -1,0 +1,63 @@
+---
+- name: Have kubectl already been copied?
+  stat: path=/usr/local/bin/kubectl
+  register: kubectl_exist
+
+- name: Create Directories
+  file:
+    dest: "{{ item_directory }}"
+    state: directory
+  with_items: "{{ directories }}"
+  loop_control:
+    loop_var: item_directory
+
+- name: Verify if Kubernetes already has downloaded
+  local_action: stat path={{ kubernetes_download_dir }}/{{kubernetes_release_server_filename}}.tar.gz
+  register: kubernetes_release_exist
+  become: no
+
+- name: Download kubernetes
+  local_action: get_url url={{ kubernetes_release_url_base }}/{{ kubernetes_release_server_filename }}.tar.gz dest={{ kubernetes_download_dir }}/{{kubernetes_release_server_filename }}.tar.gz
+  become: no
+  register: download_kubernetes_release
+  ignore_errors: True
+
+- name: "Verify if Kubernetes already has synchronized to {{ inventory_hostname }}"
+  stat: path={{ kubernetes_download_dir }}/{{kubernetes_release_server_filename}}.tar.gz
+  register: kubernetes_release_synchronized
+
+- name: Synchronize
+  copy: 
+    src: "{{ kubernetes_download_dir }}/{{ kubernetes_release_server_filename }}.tar.gz" 
+    dest: "{{ kubernetes_download_dir }}/{{ kubernetes_release_server_filename }}.tar.gz" 
+  register: kubernetes_release_copied
+  when: (kubernetes_release_synchronized.stat.exists == False)
+  become: no
+
+- name: Unarchive kubernetes release
+  unarchive: copy=no src={{ kubernetes_download_dir }}/{{ kubernetes_release_server_filename }}.tar.gz dest={{ kubernetes_download_dir }}/ creates={{ kubernetes_download_dir }}/kubernetes/server/bin/kubectl
+  register: kubernetes_unarchived
+
+- name: copy kubernetes_release_binary to /bin
+  copy: src={{kubernetes_download_dir}}/kubernetes/server/bin/{{ kubernetes_release_binary }} dest=/bin/{{ kubernetes_release_binary }} remote_src=yes mode='a+x'
+  when: (kubectl_exist.stat.exists == False or kubernetes_unarchived)
+  with_items: "{{ kubernetes_binaries }}"
+  loop_control:
+    loop_var: kubernetes_release_binary
+
+- name: Update file permissions for binary
+  file: path=/bin/{{ files }} state=touch mode="a+x"
+  with_items: "{{ kubernetes_binaries }}"
+  loop_control:
+    loop_var: files
+
+- name: Update kubeadm.conf with new CIDR for pods
+  lineinfile:
+    backup: True
+    backrefs: True
+    dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    regexp: '(Environment=.KUBELET_EXTRA_ARGS=.*)"'
+    insertafter: "KUBELET_EXTRA_ARGS="
+    line: '\1 --pod-cidr={{ calico_ip_range }} --node-ip={{ hostvars[inventory_hostname]["ansible_eth1"]["ipv4"]["address"] }}"'
+
+

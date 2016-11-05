@@ -1,0 +1,6 @@
+---
+- name: restart and enable services
+  command: /bin/true
+  notify:
+    - restart systemd
+    - enable kubelet

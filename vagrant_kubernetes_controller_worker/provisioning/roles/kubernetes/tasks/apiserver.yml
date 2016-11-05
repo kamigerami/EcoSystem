@@ -1,0 +1,11 @@
+---
+- name: place make-ca-cert.sh file on host
+  copy: src=make-ca-cert.sh dest={{ kubernetes_download_dir }} mode=a+x
+  when: inventory_hostname in groups['master']
+
+- name: run make-ca-cert command
+  command: "./make-ca-cert.sh {{ id.master_ip }} IP:{{ id.master_ip }},IP:{{ kubelet_cluster_dns_ip }}%.*.1,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.{{ kubelet_cluster_domain }}"
+  args: 
+    chdir: "{{ kubernetes_download_dir}}"
+  when: inventory_hostname in groups['master']
+
