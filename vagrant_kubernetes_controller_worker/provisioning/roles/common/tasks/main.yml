@@ -12,6 +12,7 @@
   with_items:
   - docker 
   - kubelet 
+  - etcd 
   - kubeadm 
   - kubectl 
   - kubernetes-cni

@@ -28,3 +28,10 @@
     - etcdctl
   loop_control:
     loop_var: etcd_release_binary
+
+- name: copy conf in place
+  template: src=etcd.conf dest={{ etcd_install_dir }}/etcd.conf
+
+- name: copy etcd.service file in place
+  template: src=etcd.service dest=/usr/lib/systemd/system/etcd.service
+

@@ -1,13 +1,18 @@
 ---
 - name: Kubernetes - include subtask kubelet
-  include: roles/kubelet.yml
+  include: roles/kubernetes/tasks/kubelet.yml
   
 - name: Kubernetes - include subtask apiserver
-  include: roles/apiserver.yml
+  include: roles/kubernetes/tasks/apiserver.yml
+  when: inventory_hostname in groups['master']
 
 - name: Kubernetes - include subtask scheduler
+  command: /bin/true
+  when: inventory_hostname in groups['master']
 
 - name: Kubernetes - include subtask manager
+  command: /bin/true
+  when: inventory_hostname in groups['master']
 
 - name: Kubernetes - include enable services
-  include: roles/enable.yml
+  include: roles/kubernetes/tasks/enable.yml

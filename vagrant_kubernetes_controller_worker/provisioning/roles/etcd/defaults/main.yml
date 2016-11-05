@@ -5,12 +5,13 @@ etcd_version: v3.0.13
 
 # directories
 etcd_install_dir: /etc/etcd
+etcd_data_dir: /var/etcd/data
 
 directories:
   - "{{ etcd_install_dir }}"
-  - "{{ etcd_storage_path }}"
+  - "{{ etcd_data_dir }}"
 
 # variables
 etcd_cluster_size: 3
 etcd_discovery_token_url: "https://discovery.etcd.io/new?size={{ etcd_cluster_size }}"
-etcd_storage_path: /var/etcd/data
+etcd_listen_port: 2379
