@@ -15,3 +15,4 @@ directories:
 etcd_cluster_size: 3
 etcd_discovery_token_url: "https://discovery.etcd.io/new?size={{ etcd_cluster_size }}"
 etcd_listen_port: 2379
+etcd_advertise_port: 2380

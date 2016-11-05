@@ -1,5 +1,6 @@
 [Unit]
 Description=Etcd Server
+Documentation=https://github.com/coreos/etcd
 After=network.target
 After=network-online.target
 Wants=network-online.target
@@ -7,11 +8,16 @@ Wants=network-online.target
 [Service]
 Type=notify
 WorkingDirectory={{ etcd_data_dir }}
-EnvironmentFile=-{{ etcd_install_dir }}/etcd.conf
+EnvironmentFile={{ etcd_install_dir }}/etcd.conf
 User=etcd
-# set GOMAXPROCS to number of processors
-ExecStart=/bin/bash -c "GOMAXPROCS=$(nproc) /bin/etcd --name=${ETCD_NAME} --data-dir=${ETCD_DATA_DIR} --listen-client-urls=${ETCD_LISTEN_CLIENT_URLS}"
-Restart=on-failure
+ExecStart=/bin/bash -c "/bin/etcd --name ${ETCD_NAME} --initial-advertise-peer-urls ${ETCD_ADVERTISE_PEER_URLS}\
+--listen-peer-urls ${ETCD_ADVERTISE_PEER_URLS} \
+--listen-client-urls ${ETCD_LISTEN_CLIENT_URLS} \
+--advertise-client-urls ${ETCD_ADVERTISE_PEER_URLS} \
+--discovery ${ETCD_DISCOVERY} \
+--data-dir ${ETCD_DATA_DIR}"
+Restart=always
+RestartSec=10s
 LimitNOFILE=65536
 
 [Install]

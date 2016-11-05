@@ -31,7 +31,7 @@
   when: yml_files_dir_exists.stat.exists
 
 - name: start calico node
-  command: /usr/local/bin/calicoctl node
+  command: /usr/local/bin/calicoctl node run
   when: "inventory_hostname in groups['master']"
 
 - name: kubectl apply calico

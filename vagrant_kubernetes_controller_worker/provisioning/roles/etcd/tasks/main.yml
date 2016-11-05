@@ -7,21 +7,23 @@
   file:
     dest: "{{ item_dirs }}"
     state: directory
+    owner: etcd
+    group: etcd
   with_items: "{{ directories }}"
   loop_control:
     loop_var: item_dirs
 
 - name: Download etcd
-  get_url: url={{ etcd_release_url_base }}/{{etcd_release_filename}}.tar.gz dest={{etcd_install_dir}}/{{etcd_release_filename}}.tar.gz
+  get_url: url={{ etcd_release_url_base }}/{{etcd_release_filename}}.tar.gz dest=/var/tmp/{{etcd_release_filename}}.tar.gz
   when: etcd_exist.stat.exists == False 
 
 - name: Unarchive etcd
-  unarchive: copy=no src={{etcd_install_dir}}/{{ etcd_release_filename }}.tar.gz dest={{ etcd_install_dir }}
+  unarchive: copy=no src=/var/tmp/{{ etcd_release_filename }}.tar.gz dest=/var/tmp/
   register: etcd_unarchived
   when: etcd_exist.stat.exists == False 
 
 - name: copy etcd to /bin
-  copy: src={{etcd_install_dir}}/{{ etcd_release_filename }}/{{ etcd_release_binary }} dest=/bin/{{ etcd_release_binary }} remote_src=yes mode='a+x'
+  copy: src=/var/tmp/{{ etcd_release_filename }}/{{ etcd_release_binary }} dest=/bin/{{ etcd_release_binary }} remote_src=yes mode='a+x'
   when: "{{ etcd_unarchived }}"
   with_items: 
     - etcd
@@ -29,9 +31,23 @@
   loop_control:
     loop_var: etcd_release_binary
 
+- name: create etcd discovery token
+  uri: 
+    url: "{{ etcd_discovery_token_url }}"
+    HEADER_Content-Type: "text/plain"
+    return_content: yes
+  register: etcd_discovery_token_response
+
 - name: copy conf in place
-  template: src=etcd.conf dest={{ etcd_install_dir }}/etcd.conf
+  template: src=etcd.conf dest={{ etcd_install_dir }}/etcd.conf owner=etcd group=etcd
 
 - name: copy etcd.service file in place
-  template: src=etcd.service dest=/usr/lib/systemd/system/etcd.service
+  template: src=etcd.service dest=/usr/lib/systemd/system/etcd.service owner=etcd group=etcd
+
+- name: notify services
+  command: /bin/true
+  notify:
+    - restart systemd
+    - enable and start etcd
+  ignore_errors: true
 
