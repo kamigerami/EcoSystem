@@ -4,8 +4,7 @@
     name: kubernetes
     description: Kubernetes repo
     baseurl: http://yum.kubernetes.io/repos/kubernetes-el7-x86_64
-    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg
-    gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     gpgcheck: yes
 
 - name: Install os packages
@@ -34,6 +33,7 @@
     regexp: '(Environment=.KUBELET_EXTRA_ARGS=.*)"'
     insertafter: "KUBELET_EXTRA_ARGS="
     line: '\1 --pod-cidr={{ calico_ip_range }} --node-ip={{ hostvars[inventory_hostname]["ansible_eth1"]["ipv4"]["address"] }}"'
+  when: "{{ provision_calico }}" == true
 
 - meta: flush_handlers
 

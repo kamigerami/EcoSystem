@@ -3,6 +3,14 @@
   stat: path=/etc/kubernetes/kubelet.conf
   register: kubernetes_path
 
+- name: clear directories
+  file:
+    path: /etc/kubernetes/manifests
+    state: absent
+  when: 
+    - inventory_hostname in groups['worker']
+    - kubernetes_path.stat.exists == false
+
 - debug: msg="kubeadm init --api-advertise-addresses={{ id.master_ip }} --token {{ init_token }}"
   when: inventory_hostname in groups['master']
 
@@ -11,6 +19,7 @@
   when:
     - inventory_hostname in groups['master']
     - kubernetes_path.stat.exists == false
+
 
 - name: join nodes
   command: "kubeadm join --token {{ init_token }} {{ id.master_ip }}"
